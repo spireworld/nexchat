@@ -32,7 +32,7 @@
             overflow: hidden;
         }
 
-        /* Екран авторизації */
+        /* Авторизація */
         .auth-screen {
             display: flex;
             align-items: center;
@@ -59,7 +59,7 @@
         }
 
         .auth-logo h1 {
-            font-size: 24px;
+            font-size: 26px;
             letter-spacing: 1px;
             color: #fff;
         }
@@ -146,7 +146,7 @@
             text-align: center;
         }
 
-        /* Інтерфейс месенджера */
+        /* Основний інтерфейс */
         .app-container {
             display: flex;
             width: 100vw;
@@ -186,11 +186,12 @@
             font-weight: bold;
             color: white;
             flex-shrink: 0;
+            text-transform: uppercase;
         }
 
         .header-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
         }
 
         .icon-btn {
@@ -211,8 +212,15 @@
             color: white;
         }
 
-        .admin-icon-btn {
+        .admin-btn {
+            background-color: rgba(245, 158, 11, 0.15);
             color: var(--admin-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .admin-btn:hover {
+            background-color: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
         }
 
         .search-box {
@@ -245,13 +253,13 @@
             gap: 12px;
             cursor: pointer;
             transition: background 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
         }
 
         .chat-item:hover {
             background-color: var(--bg-tertiary);
         }
 
-        /* Зона чату */
         .chat-area {
             flex: 1;
             display: flex;
@@ -361,14 +369,14 @@
             background-color: var(--accent-hover);
         }
 
-        /* Адмін-панель модальне вікно */
+        /* Адмін-панель */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             display: none;
             align-items: center;
             justify-content: center;
@@ -377,12 +385,12 @@
 
         .admin-modal {
             background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--admin-color);
             border-radius: 16px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
         }
 
         .admin-header {
@@ -397,17 +405,20 @@
         .admin-header h2 {
             color: var(--admin-color);
             font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .close-modal {
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 22px;
+            font-size: 24px;
             cursor: pointer;
         }
 
-        .stat-card {
+        .admin-stat-box {
             background-color: var(--bg-primary);
             padding: 16px;
             border-radius: 8px;
@@ -415,28 +426,44 @@
             margin-bottom: 16px;
         }
 
-        .stat-card h4 {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 6px;
+        .admin-users-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
         }
 
-        .stat-card p {
-            font-size: 22px;
+        .admin-user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .badge-admin {
+            background: var(--admin-color);
+            color: #000;
+            font-size: 10px;
             font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Авторизація за нікнеймом -->
+    <!-- Екран Авторизації / Реєстрації -->
     <div id="auth-screen" class="auth-screen">
         <div class="auth-card">
             <div class="auth-logo">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 <h1>NexChat</h1>
             </div>
-            <p class="auth-subtitle">Сучасний захищений месенджер</p>
+            <p class="auth-subtitle">Вхід та реєстрація за Нікнеймом</p>
             
             <div class="auth-tabs">
                 <button id="tab-signin" class="active" onclick="switchAuthTab('signin')">Вхід</button>
@@ -446,7 +473,7 @@
             <form id="auth-form" onsubmit="handleAuth(event)">
                 <div class="input-group">
                     <label>Нікнейм (Username)</label>
-                    <input type="text" id="username-input" required placeholder="Наприклад: Kriexz">
+                    <input type="text" id="username-input" required placeholder="Введіть ваш нік (напр. Kriexz)">
                 </div>
                 <div id="signup-fullname-group" class="input-group" style="display: none;">
                     <label>Повне ім'я</label>
@@ -462,17 +489,20 @@
         </div>
     </div>
 
-    <!-- Основний додаток -->
+    <!-- Основний месенджер -->
     <div id="app-screen" class="app-container" style="display: none;">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="user-mini-profile">
                     <div id="my-avatar" class="avatar-placeholder">U</div>
-                    <span id="my-username">@user</span>
+                    <div>
+                        <span id="my-username" style="font-weight: 600; display: block;">@user</span>
+                        <span id="my-badge" style="display: none;" class="badge-admin">ADMIN</span>
+                    </div>
                 </div>
                 <div class="header-actions">
-                    <!-- Кнопка адмін-панелі (тільки для Kriexz) -->
-                    <button id="admin-panel-btn" class="icon-btn admin-icon-btn" onclick="openAdminPanel()" title="Адмін-панель" style="display: none;">
+                    <!-- Кнопка адмін панелі (бачить ТІЛЬКИ Kriexz) -->
+                    <button id="admin-panel-btn" class="icon-btn admin-btn" onclick="openAdminPanel()" title="Адмін-Панель" style="display: none;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
                     </button>
                     <button class="icon-btn" onclick="logoutUser()" title="Вийти">
@@ -491,8 +521,9 @@
 
         <main class="chat-area">
             <div id="no-chat-selected" class="empty-chat">
-                <div style="font-size: 48px;">💬</div>
-                <h2>Виберіть чат для спілкування в NexChat</h2>
+                <div style="font-size: 54px;">⚡</div>
+                <h2>Вітаємо в NexChat!</h2>
+                <p>Виберіть користувача з лівого списку для початку спілкування.</p>
             </div>
 
             <div id="active-chat-container" class="active-chat" style="display: none;">
@@ -500,7 +531,7 @@
                     <div class="chat-header-info">
                         <div id="current-chat-avatar" class="avatar-placeholder">#</div>
                         <div>
-                            <h3 id="current-chat-title">Назва чату</h3>
+                            <h3 id="current-chat-title">Чат</h3>
                             <span class="status-online">онлайн</span>
                         </div>
                     </div>
@@ -518,27 +549,33 @@
         </main>
     </div>
 
-    <!-- Модальне вікно адмін-панелі -->
+    <!-- Адмін-Панель Модальне Вікно -->
     <div id="admin-modal" class="modal-overlay">
         <div class="admin-modal">
             <div class="admin-header">
-                <h2>Панель адміністратора NexChat</h2>
+                <h2>👑 Панель Адміністратора Kriexz</h2>
                 <button class="close-modal" onclick="closeAdminPanel()">×</button>
             </div>
-            <div class="stat-card">
-                <h4>Всього зареєстрованих користувачів</h4>
-                <p id="stat-users-count">0</p>
+            
+            <div class="admin-stat-box">
+                <h4 style="color: var(--text-muted); font-size: 13px;">Всього користувачів у системі:</h4>
+                <p id="stat-users-count" style="font-size: 28px; font-weight: bold; color: var(--admin-color);">0</p>
             </div>
-            <p style="color: var(--text-muted); font-size: 14px;">Вітаємо, головний адміністратор **@Kriexz**! Усі системні права активні.</p>
+
+            <h4 style="margin-bottom: 10px; font-size: 14px; color: var(--text-muted);">Зареєстровані користувачі:</h4>
+            <div class="admin-users-list" id="admin-users-list">
+                <!-- Список користувачів завантажується динамічно -->
+            </div>
         </div>
     </div>
 
-    <!-- Логіка Firebase (використовуємо стабільну версію v10.8.0) -->
+    <!-- Підключення Firebase (Стабільна версія) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Конфігурація Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDR35qbiBixH3y-FuaM5hoYEyLwhLuoA3w",
             authDomain: "nexchat-aabb2.firebaseapp.com",
@@ -554,15 +591,18 @@
 
         let currentAuthMode = 'signin';
         let currentUser = null;
+        let currentUserProfile = null;
         let activeChatId = null;
         let unsubscribeMessages = null;
 
+        // Перемикач режимів авторизації
         window.switchAuthTab = function(mode) {
             currentAuthMode = mode;
             const fullnameGroup = document.getElementById('signup-fullname-group');
             const authBtn = document.getElementById('auth-btn');
             const tabSignin = document.getElementById('tab-signin');
             const tabSignup = document.getElementById('tab-signup');
+            document.getElementById('auth-error').innerText = '';
 
             if (mode === 'signup') {
                 fullnameGroup.style.display = 'block';
@@ -577,25 +617,37 @@
             }
         };
 
+        // Вхід / Реєстрація через Нікнейм
         window.handleAuth = async function(event) {
             event.preventDefault();
-            const usernameInput = document.getElementById('username-input').value.trim().toLowerCase();
+            const usernameRaw = document.getElementById('username-input').value.trim();
+            const usernameLower = usernameRaw.toLowerCase();
             const password = document.getElementById('password-input').value;
             const errorEl = document.getElementById('auth-error');
             errorEl.innerText = '';
 
-            const syntheticEmail = `${usernameInput}@nexchat.local`;
+            if (!usernameRaw) {
+                errorEl.innerText = 'Введіть ваш нікнейм';
+                return;
+            }
+
+            // Формуємо службовий email для Firebase Auth
+            const syntheticEmail = `${usernameLower}@nexchat.app`;
 
             try {
                 if (currentAuthMode === 'signup') {
                     const fullname = document.getElementById('fullname-input').value.trim();
-                    if (!usernameInput) throw new Error('Введіть нікнейм');
-
+                    
+                    // Створення акаунта у Firebase Auth
                     const res = await createUserWithEmailAndPassword(auth, syntheticEmail, password);
+                    
+                    // Збереження даних профілю у Firestore
                     await setDoc(doc(db, 'profiles', res.user.uid), {
                         uid: res.user.uid,
-                        username: usernameInput,
-                        fullname: fullname || usernameInput,
+                        username: usernameRaw,
+                        usernameLower: usernameLower,
+                        fullname: fullname || usernameRaw,
+                        isAdmin: (usernameLower === 'kriexz'),
                         createdAt: serverTimestamp()
                     });
                 } else {
@@ -606,7 +658,9 @@
                 if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
                     errorEl.innerText = 'Невірний нікнейм або пароль';
                 } else if (err.code === 'auth/email-already-in-use') {
-                    errorEl.innerText = 'Цей нікнейм вже зайнятий';
+                    errorEl.innerText = 'Цей нікнейм вже зайнятий! Оберіть інший або увійдіть.';
+                } else if (err.code === 'auth/weak-password') {
+                    errorEl.innerText = 'Пароль має бути не менше 6 символів.';
                 } else {
                     errorEl.innerText = err.message;
                 }
@@ -617,37 +671,44 @@
             signOut(auth);
         };
 
+        // Спостерігач стану авторизації
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('app-screen').style.display = 'flex';
                 
                 try {
                     const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
                     if (profileDoc.exists()) {
-                        const data = profileDoc.data();
-                        document.getElementById('my-username').innerText = `@${data.username}`;
-                        document.getElementById('my-avatar').innerText = data.username[0].toUpperCase();
+                        currentUserProfile = profileDoc.data();
+                        
+                        document.getElementById('my-username').innerText = `@${currentUserProfile.username}`;
+                        document.getElementById('my-avatar').innerText = currentUserProfile.username[0].toUpperCase();
 
-                        // Перевірка на адміна Kriexz
-                        if (data.username.toLowerCase() === 'kriexz') {
+                        // Перевірка чи це адміністратор Kriexz
+                        if (currentUserProfile.usernameLower === 'kriexz' || currentUserProfile.isAdmin) {
                             document.getElementById('admin-panel-btn').style.display = 'flex';
+                            document.getElementById('my-badge').style.display = 'inline-block';
                         } else {
                             document.getElementById('admin-panel-btn').style.display = 'none';
+                            document.getElementById('my-badge').style.display = 'none';
                         }
                     }
                 } catch (e) {
                     console.error("Помилка завантаження профілю:", e);
                 }
+
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-screen').style.display = 'flex';
                 loadChats();
             } else {
                 currentUser = null;
+                currentUserProfile = null;
                 document.getElementById('auth-screen').style.display = 'flex';
                 document.getElementById('app-screen').style.display = 'none';
             }
         });
 
+        // Завантаження списку користувачів
         async function loadChats() {
             const chatListEl = document.getElementById('chat-list');
             chatListEl.innerHTML = '';
@@ -663,7 +724,7 @@
                     div.innerHTML = `
                         <div class="avatar-placeholder">${profile.username[0].toUpperCase()}</div>
                         <div>
-                            <h4>${profile.fullname || profile.username}</h4>
+                            <h4 style="font-size: 15px;">${profile.fullname || profile.username}</h4>
                             <span style="font-size: 12px; color: var(--text-muted);">@${profile.username}</span>
                         </div>
                     `;
@@ -671,10 +732,11 @@
                     chatListEl.appendChild(div);
                 });
             } catch (e) {
-                console.error("Помилка завантаження списку чатів:", e);
+                console.error("Помилка завантаження чатів:", e);
             }
         }
 
+        // Відкриття чату
         async function openChat(recipientId, recipientName) {
             activeChatId = [currentUser.uid, recipientId].sort().join('_');
             
@@ -702,6 +764,7 @@
             });
         }
 
+        // Надсилання повідомлення
         window.handleSendMessage = async function(event) {
             event.preventDefault();
             const input = document.getElementById('message-input');
@@ -716,10 +779,11 @@
                 });
                 input.value = '';
             } catch (e) {
-                console.error("Помилка надсилання повідомлення:", e);
+                console.error("Помилка надсилання:", e);
             }
         };
 
+        // Пошук
         window.handleSearch = function(queryText) {
             const items = document.querySelectorAll('.chat-item');
             items.forEach(item => {
@@ -728,11 +792,30 @@
             });
         };
 
+        // Адмін-Панель (Тільки для Kriexz)
         window.openAdminPanel = async function() {
             document.getElementById('admin-modal').style.display = 'flex';
+            const usersListEl = document.getElementById('admin-users-list');
+            usersListEl.innerHTML = '';
+
             try {
                 const querySnapshot = await getDocs(collection(db, 'profiles'));
                 document.getElementById('stat-users-count').innerText = querySnapshot.size;
+
+                querySnapshot.forEach((docSnap) => {
+                    const u = docSnap.data();
+                    const row = document.createElement('div');
+                    row.className = 'admin-user-row';
+                    row.innerHTML = `
+                        <div>
+                            <strong>@${u.username}</strong> (${u.fullname || 'Без імені'})
+                        </div>
+                        <div>
+                            ${u.usernameLower === 'kriexz' ? '<span class="badge-admin">OWNER</span>' : '<span style="color:var(--text-muted); font-size:12px;">Користувач</span>'}
+                        </div>
+                    `;
+                    usersListEl.appendChild(row);
+                });
             } catch (e) {
                 console.error(e);
             }
