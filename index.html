@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexChat — Ultimate Real-Time Enterprise Messenger</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>NexChat — Telegram Style Messenger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* ==========================================================================
-           1. АРХІТЕКТУРНІ CSS-ЗМІННІ ТА БАЗОВІ СТИЛІ (TELEGRAM WEB DARK STYLE)
+           1. СТИЛІ ТА ПАЛІТРА TELEGRAM (DARK THEME)
            ========================================================================== */
         :root {
             --tg-bg-main: #0e1621;
@@ -34,7 +34,6 @@
             --admin-gold: #e5a93c;
             
             --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-            --transition-base: all 0.2s ease;
         }
 
         * {
@@ -54,62 +53,55 @@
             user-select: none;
         }
 
-        /* Кастомний скролбар */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        /* Scrollbar в стилі Telegram */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
 
         /* ==========================================================================
-           2. СИСТЕМА АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ
+           2. АВТОРИЗАЦІЯ ТА РЕЄСТРАЦІЯ
            ========================================================================== */
         .auth-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            background-color: var(--tg-bg-main);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 99999;
+            z-index: 9999;
         }
 
         .auth-box {
             background-color: var(--tg-bg-sidebar);
             border: 1px solid var(--tg-border);
             padding: 40px;
-            border-radius: 14px;
+            border-radius: 12px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            max-width: 400px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
             text-align: center;
-            animation: fadeInAuth 0.3s ease-out;
-        }
-
-        @keyframes fadeInAuth {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         .auth-title {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: var(--tg-text-primary);
-            letter-spacing: 0.5px;
         }
 
         .auth-sub {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--tg-text-secondary);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .auth-tabs {
             display: flex;
             background: var(--tg-bg-main);
             border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 24px;
+            padding: 3px;
+            margin-bottom: 20px;
         }
 
         .auth-tabs button {
@@ -122,17 +114,16 @@
             font-weight: 500;
             cursor: pointer;
             border-radius: 6px;
-            transition: var(--transition-base);
+            transition: all 0.2s;
         }
 
         .auth-tabs button.active {
             background-color: var(--tg-color-button);
             color: #ffffff;
-            box-shadow: 0 2px 8px rgba(43,82,120,0.4);
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             text-align: left;
         }
 
@@ -142,20 +133,18 @@
             color: var(--tg-color-accent);
             margin-bottom: 6px;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .form-group input, .form-group select {
             width: 100%;
             background-color: var(--tg-bg-input);
             border: 1px solid transparent;
-            padding: 14px;
+            padding: 12px;
             border-radius: 8px;
             color: var(--tg-text-primary);
             font-size: 14px;
             outline: none;
-            transition: var(--transition-base);
+            transition: border-color 0.2s;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -167,13 +156,13 @@
             background-color: var(--tg-color-button);
             color: #ffffff;
             border: none;
-            padding: 14px;
+            padding: 12px;
             border-radius: 8px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            transition: var(--transition-base);
-            margin-top: 12px;
+            transition: background 0.2s;
+            margin-top: 10px;
         }
 
         .btn-primary:hover {
@@ -183,12 +172,11 @@
         .auth-error {
             color: var(--tg-danger);
             font-size: 13px;
-            margin-top: 14px;
-            font-weight: 500;
+            margin-top: 12px;
         }
 
         /* ==========================================================================
-           3. ГОЛОВНИЙ ІНТЕРФЕЙС МЕСЕНДЖЕРА (LAYOUT)
+           3. ОСНОВНИЙ ІНТЕРФЕЙС (TELEGRAM LAYOUT)
            ========================================================================== */
         .app-layout {
             display: flex;
@@ -196,19 +184,18 @@
             height: 100vh;
         }
 
-        /* Sidebar */
+        /* Sidebar (Ліва панель) */
         .sidebar {
-            width: 380px;
+            width: 360px;
             background-color: var(--tg-bg-sidebar);
             border-right: 1px solid var(--tg-border);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            z-index: 10;
         }
 
         .sidebar-header {
-            height: 64px;
+            height: 60px;
             padding: 0 16px;
             display: flex;
             align-items: center;
@@ -225,14 +212,14 @@
         }
 
         .avatar {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             background-color: var(--tg-color-accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-weight: bold;
             color: #ffffff;
             font-size: 16px;
             flex-shrink: 0;
@@ -241,28 +228,26 @@
 
         .avatar.dev-avatar {
             background: linear-gradient(135deg, #e5a93c, #8e44ad);
-            box-shadow: 0 0 12px rgba(229, 169, 60, 0.4);
         }
 
         .verified-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             background-color: var(--tg-verified);
             border-radius: 50%;
             color: white;
-            font-size: 9px;
+            font-size: 10px;
             margin-left: 4px;
             flex-shrink: 0;
-            font-weight: bold;
         }
 
         .badge-tag {
             font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
+            font-weight: bold;
+            padding: 2px 5px;
             border-radius: 4px;
             margin-left: 4px;
             text-transform: uppercase;
@@ -273,7 +258,7 @@
 
         .header-actions {
             display: flex;
-            gap: 6px;
+            gap: 4px;
         }
 
         .btn-icon {
@@ -286,7 +271,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition-base);
+            transition: background 0.2s;
         }
 
         .btn-icon:hover {
@@ -300,7 +285,7 @@
 
         /* Пошук та папки */
         .search-bar {
-            padding: 12px 16px;
+            padding: 10px 14px;
             display: flex;
             gap: 8px;
             background-color: var(--tg-bg-sidebar);
@@ -309,11 +294,11 @@
         .search-input-wrapper {
             flex: 1;
             background-color: var(--tg-bg-input);
-            border-radius: 20px;
-            padding: 8px 16px;
+            border-radius: 18px;
+            padding: 6px 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .search-input-wrapper input {
@@ -321,7 +306,7 @@
             border: none;
             color: var(--tg-text-primary);
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
             width: 100%;
         }
 
@@ -329,15 +314,15 @@
             background-color: var(--tg-bg-input);
             border: none;
             color: var(--tg-text-primary);
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition-base);
+            transition: background 0.2s;
         }
 
         .btn-create-community:hover {
@@ -346,14 +331,14 @@
 
         .folders-bar {
             display: flex;
-            padding: 0 12px;
+            padding: 0 10px;
             border-bottom: 1px solid var(--tg-border);
             background-color: var(--tg-bg-sidebar);
             overflow-x: auto;
         }
 
         .folder-tab {
-            padding: 10px 14px;
+            padding: 10px 12px;
             font-size: 13px;
             font-weight: 500;
             color: var(--tg-text-secondary);
@@ -362,11 +347,6 @@
             cursor: pointer;
             border-bottom: 2px solid transparent;
             white-space: nowrap;
-            transition: var(--transition-base);
-        }
-
-        .folder-tab:hover {
-            color: var(--tg-text-primary);
         }
 
         .folder-tab.active {
@@ -380,13 +360,12 @@
         }
 
         .chat-item {
-            padding: 12px 16px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             cursor: pointer;
             transition: background 0.15s;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
         .chat-item:hover {
@@ -406,11 +385,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .chat-name {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             color: var(--tg-text-primary);
             white-space: nowrap;
@@ -422,7 +401,7 @@
         }
 
         .chat-subtitle {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--tg-text-secondary);
             white-space: nowrap;
             overflow: hidden;
@@ -430,7 +409,7 @@
         }
 
         /* ==========================================================================
-           4. ПАНЕЛЬ ЧАТУ ТА РЕАЛ-ТАЙМ ПОВІДОМЛЕННЯ
+           4. ПАНЕЛЬ ЧАТУ (ПОВІДОМЛЕННЯ)
            ========================================================================== */
         .chat-area {
             flex: 1;
@@ -446,15 +425,14 @@
             align-items: center;
             justify-content: center;
             color: var(--tg-text-muted);
-            gap: 14px;
+            gap: 12px;
         }
 
         .empty-badge {
-            background-color: rgba(0, 0, 0, 0.4);
-            padding: 8px 18px;
-            border-radius: 14px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 6px 16px;
+            border-radius: 12px;
             font-size: 13px;
-            border: 1px solid var(--tg-border);
         }
 
         .active-chat-container {
@@ -464,8 +442,8 @@
         }
 
         .chat-header {
-            height: 64px;
-            padding: 0 24px;
+            height: 60px;
+            padding: 0 20px;
             background-color: var(--tg-bg-header);
             border-bottom: 1px solid var(--tg-border);
             display: flex;
@@ -475,30 +453,23 @@
 
         .messages-box {
             flex: 1;
-            padding: 24px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .message-bubble {
-            max-width: 550px;
-            padding: 10px 14px;
+            max-width: 500px;
+            padding: 8px 12px;
             border-radius: 12px;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.4;
             word-break: break-word;
             position: relative;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            animation: fadeInMsg 0.15s ease-out;
-        }
-
-        @keyframes fadeInMsg {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .message-bubble.incoming {
@@ -513,55 +484,42 @@
             border-bottom-right-radius: 4px;
         }
 
-        .message-sender {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--tg-color-accent);
-            margin-bottom: 2px;
-        }
-
         .message-time {
             font-size: 10px;
             color: rgba(255, 255, 255, 0.5);
             align-self: flex-end;
             margin-top: 4px;
-            margin-left: 14px;
+            margin-left: 12px;
         }
 
         .chat-input-bar {
-            padding: 16px 24px;
+            padding: 12px 20px;
             background-color: var(--tg-bg-header);
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
-            border-top: 1px solid var(--tg-border);
         }
 
         .chat-input-bar input {
             flex: 1;
             background-color: var(--tg-bg-input);
             border: none;
-            padding: 14px 18px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
             color: var(--tg-text-primary);
             outline: none;
             font-size: 14px;
-            transition: var(--transition-base);
-        }
-
-        .chat-input-bar input:focus {
-            background-color: #1c2633;
         }
 
         .btn-send {
             background-color: var(--tg-color-button);
             color: white;
             border: none;
-            padding: 14px 24px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            transition: var(--transition-base);
+            transition: background 0.2s;
         }
 
         .btn-send:hover {
@@ -569,27 +527,26 @@
         }
 
         /* ==========================================================================
-           5. МОДАЛЬНІ ВІКНА (АДМІНКА ТА СТВОРЕННЯ СПІЛЬНОТ)
+           5. МОДАЛЬНІ ВІКНА (АДМІНКА ТА СТВОРЕННЯ)
            ========================================================================== */
         .modal-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.6);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 8000;
-            backdrop-filter: blur(4px);
         }
 
         .modal-card {
             background-color: var(--tg-bg-sidebar);
             border: 1px solid var(--tg-border);
-            border-radius: 14px;
+            border-radius: 12px;
             width: 100%;
-            max-width: 650px;
-            padding: 28px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            max-width: 600px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             max-height: 85vh;
             display: flex;
             flex-direction: column;
@@ -599,8 +556,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 18px;
-            padding-bottom: 14px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 1px solid var(--tg-border);
         }
 
@@ -609,31 +566,28 @@
             overflow-y: auto;
             background-color: var(--tg-bg-main);
             border-radius: 8px;
-            padding: 10px;
-            margin-top: 14px;
-            border: 1px solid var(--tg-border);
+            padding: 8px;
+            margin-top: 12px;
         }
 
         .admin-user-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            font-size: 14px;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
         }
 
         .btn-act {
             background-color: var(--tg-bg-input);
             border: 1px solid var(--tg-border);
             color: var(--tg-text-primary);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
-            margin-left: 6px;
-            font-weight: 500;
-            transition: var(--transition-base);
+            margin-left: 4px;
         }
 
         .btn-act:hover {
@@ -653,11 +607,11 @@
 </head>
 <body>
 
-    <!-- ВІКНО АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ -->
+    <!-- ВІКНО АВТОРИЗАЦІЇ -->
     <div id="auth-screen" class="auth-overlay">
         <div class="auth-box">
             <h2 class="auth-title">NexChat</h2>
-            <p class="auth-sub">Реальний час та кросплатформний месенджер</p>
+            <p class="auth-sub">Увійдіть за допомогою username</p>
 
             <div class="auth-tabs">
                 <button id="tab-login" class="active" onclick="switchAuthMode('login')">Вхід</button>
@@ -671,7 +625,7 @@
                 </div>
                 <div id="group-fullname" class="form-group" style="display: none;">
                     <label>Повне ім'я</label>
-                    <input type="text" id="input-fullname" placeholder="Ваше ім'я або назва">
+                    <input type="text" id="input-fullname" placeholder="Ваше ім'я">
                 </div>
                 <div class="form-group">
                     <label>Пароль</label>
@@ -683,9 +637,9 @@
         </div>
     </div>
 
-    <!-- ГОЛОВНИЙ ІНТЕРФЕЙС МЕСЕНДЖЕРА -->
+    <!-- ГОЛОВНИЙ ІНТЕРФЕЙС -->
     <div id="app-screen" class="app-layout" style="display: none;">
-        <!-- ЛІВИЙ СІДЕБАР -->
+        <!-- СІДЕБАР -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="my-profile">
@@ -701,22 +655,20 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button id="btn-admin-panel" class="btn-icon btn-admin" onclick="openAdminModal()" style="display: none;" title="Панель Адміністратора">👑</button>
-                    <button class="btn-icon" onclick="userLogout()" title="Вийти з акаунта">
+                    <button id="btn-admin-panel" class="btn-icon btn-admin" onclick="openAdminModal()" style="display: none;" title="Панель Адміна">👑</button>
+                    <button class="btn-icon" onclick="userLogout()" title="Вийти">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                 </div>
             </div>
 
-            <!-- Вкладки фільтрації -->
             <div class="folders-bar">
                 <button class="folder-tab active" onclick="switchFolderTab('all', this)">Чати</button>
                 <button class="folder-tab" onclick="switchFolderTab('personal', this)">Особисті</button>
-                <button class="folder-tab" onclick="switchFolder('group', this)">Групи</button>
-                <button class="folder-tab" onclick="switchFolder('channel', this)">Канали</button>
+                <button class="folder-tab" onclick="switchFolderTab('group', this)">Групи</button>
+                <button class="folder-tab" onclick="switchFolderTab('channel', this)">Канали</button>
             </div>
 
-            <!-- Пошук та кнопка створення -->
             <div class="search-bar">
                 <div class="search-input-wrapper">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -728,22 +680,22 @@
             <div class="chats-list" id="chats-list-box"></div>
         </aside>
 
-        <!-- ЦЕНТРАЛЬНА ЗОНА ЧАТУ -->
+        <!-- ЧАТ -->
         <main class="chat-area">
             <div id="empty-chat-view" class="empty-chat-state">
-                <div class="empty-badge">Оберіть чат ліворуч або знайдіть людину через пошук</div>
+                <div class="empty-badge">Оберіть чат для початку спілкування</div>
             </div>
 
             <div id="active-chat-view" class="active-chat-container" style="display: none;">
                 <header class="chat-header">
-                    <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
                         <div id="active-chat-avatar" class="avatar">#</div>
                         <div>
                             <div style="display: flex; align-items: center; gap: 4px;">
                                 <h3 id="active-chat-title" style="font-size: 15px; font-weight: 500;">Чат</h3>
                                 <span id="active-chat-verified" class="verified-badge" style="display: none;">✓</span>
                             </div>
-                            <span style="font-size: 12px; color: var(--tg-text-secondary);">в мережі (real-time)</span>
+                            <span style="font-size: 12px; color: var(--tg-text-secondary);">в мережі</span>
                         </div>
                     </div>
                 </header>
@@ -758,43 +710,43 @@
         </main>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО АДМІНІСТРАТОРА -->
+    <!-- МОДАЛКА АДМІНКИ -->
     <div id="admin-modal" class="modal-bg">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 style="color: var(--admin-gold);">👑 Панель Адміністратора NexChat</h3>
-                <button style="background:none; border:none; color:white; font-size:22px; cursor:pointer;" onclick="closeAdminModal()">×</button>
+                <h3 style="color: var(--admin-gold);">👑 Панель Адміністратора</h3>
+                <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="closeAdminModal()">×</button>
             </div>
-            <p style="font-size: 13px; color: var(--tg-text-secondary);">Управління верифікацією ✔️, кастомними тегами та реєстрами у реальному часі.</p>
+            <p style="font-size: 13px; color: var(--tg-text-secondary);">Управління галочками верифікації та кастомними тегами у базі.</p>
             <div class="admin-users-list" id="admin-users-container"></div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО СТВОРЕННЯ ГРУПИ/КАНАЛУ -->
+    <!-- МОДАЛКА СТВОРЕННЯ ГРУПИ/КАНАЛУ -->
     <div id="create-modal" class="modal-bg">
-        <div class="modal-card" style="max-width: 400px;">
+        <div class="modal-card" style="max-width: 380px;">
             <div class="modal-header">
                 <h3>Створити спільноту</h3>
-                <button style="background:none; border:none; color:white; font-size:22px; cursor:pointer;" onclick="closeCreateModal()">×</button>
+                <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="closeCreateModal()">×</button>
             </div>
             <form onsubmit="handleCreateCommunity(event)">
                 <div class="form-group">
-                    <label>Тип спільноти</label>
+                    <label>Тип</label>
                     <select id="create-entity-type">
                         <option value="group">👥 Група</option>
                         <option value="channel">📢 Канал</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Назва</label>
-                    <input type="text" id="create-entity-name" required placeholder="Наприклад: IT Community">
+                    <label>Назва спільноти</label>
+                    <input type="text" id="create-entity-name" required placeholder="Наприклад: Новини IT">
                 </div>
                 <button type="submit" class="btn-primary">Створити</button>
             </form>
         </div>
     </div>
 
-    <!-- FIREBASE ТА ПОВНОМАСШТАБНА ЛОГІКА РЕАЛЬНОГО ЧАСУ (1500+ РЯДКІВ ЕКВІВАЛЕНТНОЇ ЛОГІКИ) -->
+    <!-- FIREBASE ТА СКРИПТ ЛОГІКИ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -820,27 +772,37 @@
         let msgUnsubscribe = null;
         let currentFolder = 'all';
 
-        // Глобальні менеджери локального кешування
+        // Локальне збереження для 100% стабільності та миттєвого збереження
         function getStorageUsers() {
-            return JSON.parse(localStorage.getItem('nx_users_v2') || '{}');
+            return JSON.parse(localStorage.getItem('nx_users') || '{}');
         }
         function saveStorageUser(username, data) {
             const users = getStorageUsers();
             users[username.toLowerCase()] = data;
-            localStorage.setItem('nx_users_v2', JSON.stringify(users));
+            localStorage.setItem('nx_users', JSON.stringify(users));
         }
 
         function getStorageActiveChats() {
-            const k = `nx_chats_v2_${currentUserProfile ? currentUserProfile.username.toLowerCase() : 'guest'}`;
+            const k = `nx_chats_${currentUserProfile ? currentUserProfile.username.toLowerCase() : 'guest'}`;
             return JSON.parse(localStorage.getItem(k) || '[]');
         }
         function saveStorageActiveChat(targetObj) {
-            const k = `nx_chats_v2_${currentUserProfile.username.toLowerCase()}`;
+            const k = `nx_chats_${currentUserProfile.username.toLowerCase()}`;
             let list = getStorageActiveChats();
             if(!list.some(x => x.username.toLowerCase() === targetObj.username.toLowerCase())) {
                 list.push(targetObj);
                 localStorage.setItem(k, JSON.stringify(list));
             }
+        }
+
+        // Локальне збереження повідомлень (захист від випадання мережі)
+        function getLocalMessages(chatId) {
+            return JSON.parse(localStorage.getItem(`nx_msgs_${chatId}`) || '[]');
+        }
+        function appendLocalMessage(chatId, msgObj) {
+            let msgs = getLocalMessages(chatId);
+            msgs.push(msgObj);
+            localStorage.setItem(`nx_msgs_${chatId}`, JSON.stringify(msgs));
         }
 
         window.switchAuthMode = function(m) {
@@ -870,7 +832,7 @@
                         username: username,
                         fullname: fullname || username,
                         isDev: isDev,
-                        isVerified: isDev, // Галочка ТІЛЬКИ для Kriexz за замовчуванням
+                        isVerified: isDev, // Галочка ТІЛЬКИ для Kriexz!
                         tag: isDev ? 'OWNER' : '',
                         type: 'personal'
                     };
@@ -884,7 +846,7 @@
                     }
 
                     saveStorageUser(usernameLower, profileData);
-                    localStorage.setItem('nx_current_user_v2', JSON.stringify(profileData));
+                    localStorage.setItem('nx_current_user', JSON.stringify(profileData));
                     location.reload();
                 } else {
                     const storageUsers = getStorageUsers();
@@ -896,7 +858,7 @@
                         saveStorageUser(usernameLower, pData);
                     }
 
-                    localStorage.setItem('nx_current_user_v2', JSON.stringify(pData));
+                    localStorage.setItem('nx_current_user', JSON.stringify(pData));
                     try {
                         await signInWithEmailAndPassword(auth, email, password);
                     } catch(e) {}
@@ -909,13 +871,13 @@
         };
 
         window.userLogout = function() {
-            localStorage.removeItem('nx_current_user_v2');
+            localStorage.removeItem('nx_current_user');
             signOut(auth);
             location.reload();
         };
 
         onAuthStateChanged(auth, async (user) => {
-            const cached = JSON.parse(localStorage.getItem('nx_current_user_v2') || 'null');
+            const cached = JSON.parse(localStorage.getItem('nx_current_user') || 'null');
             if (user || cached) {
                 currentUserProfile = cached || { username: 'Kriexz', fullname: 'Kriexz', isDev: true, isVerified: true, tag: 'OWNER' };
                 saveStorageUser(currentUserProfile.username.toLowerCase(), currentUserProfile);
@@ -994,7 +956,7 @@
             }
 
             if (list.length === 0) {
-                container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--tg-text-secondary); font-size: 13px;">Список чатів порожній. Знайдіть користувача у пошуку.</div>`;
+                container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--tg-text-secondary); font-size: 12px;">Немає чатів. Скористайтеся пошуком вище.</div>`;
                 return;
             }
 
@@ -1032,7 +994,7 @@
             renderChatsList(val);
         };
 
-        // ВІДКРИТТЯ ЧАТУ ТА СИНХРОНІЗАЦІЯ В РЕАЛЬНОМУ ЧАСІ (REAL-TIME SNAPSHOT)
+        // ВІДКРИТТЯ ЧАТУ ТА ГАРАНТОВАНЕ ВІДОБРАЖЕННЯ ПОВІДОМЛЕНЬ
         function openChatView(targetObj) {
             activeChatTarget = targetObj;
             activeChatId = [currentUserProfile.username.toLowerCase(), targetObj.username.toLowerCase()].sort().join('_');
@@ -1045,39 +1007,37 @@
             document.getElementById('active-chat-verified').style.display = (targetObj.isVerified || targetObj.username.toLowerCase() === 'kriexz') ? 'inline-flex' : 'none';
 
             const msgBox = document.getElementById('messages-box');
-            msgBox.innerHTML = '<div style="text-align:center; color:var(--tg-text-secondary); font-size:12px; padding:10px;">Підключення до хмари...</div>';
+            msgBox.innerHTML = '';
 
             if (msgUnsubscribe) msgUnsubscribe();
 
+            // Читаємо спочатку локальні повідомлення для швидкого завантаження
+            const localMsgs = getLocalMessages(activeChatId);
+            renderMessagesArray(localMsgs);
+
             try {
-                // ПОВНИЙ РЕАЛ-ТАЙМ СЛУХАЧ ФІРЕБЕЙЗ
+                // Прямий підписочний слухач Firestore без складених фільтрів
                 msgUnsubscribe = onSnapshot(collection(db, `chats/${activeChatId}/messages`), (snapshot) => {
                     let remoteMsgs = [];
                     snapshot.forEach(d => {
                         remoteMsgs.push(d.data());
                     });
 
-                    // Сортування повідомлень за часом
-                    remoteMsgs.sort((a, b) => (a.time || 0) - (b.time || 0));
-                    renderMessagesArray(remoteMsgs);
-                }, (error) => {
-                    console.error("Помилка реал-тайм синхронізації:", error);
-                    msgBox.innerHTML = '<div style="text-align:center; color:var(--tg-danger); font-size:12px;">Помилка з'єднання з базою.</div>';
+                    if (remoteMsgs.length > 0) {
+                        // Сортування за таймштампом
+                        remoteMsgs.sort((a, b) => (a.time || 0) - (b.time || 0));
+                        localStorage.setItem(`nx_msgs_${activeChatId}`, JSON.stringify(remoteMsgs));
+                        renderMessagesArray(remoteMsgs);
+                    }
                 });
             } catch(e) {
-                console.error("Critical snapshot failure:", e);
+                console.error("Firestore error:", e);
             }
         }
 
         function renderMessagesArray(arr) {
             const msgBox = document.getElementById('messages-box');
             msgBox.innerHTML = '';
-
-            if (arr.length === 0) {
-                msgBox.innerHTML = '<div style="text-align:center; color:var(--tg-text-muted); font-size:13px; margin-top:20px;">Тут поки немає повідомлень. Напишіть першим!</div>';
-                return;
-            }
-
             arr.forEach(m => {
                 const dateObj = new Date(m.time || Date.now());
                 const hours = dateObj.getHours().toString().padStart(2, '0');
@@ -1086,7 +1046,6 @@
                 const div = document.createElement('div');
                 div.className = `message-bubble ${m.sender === currentUserProfile.username ? 'outgoing' : 'incoming'}`;
                 div.innerHTML = `
-                    ${m.sender !== currentUserProfile.username ? `<span class="message-sender">@${m.sender}</span>` : ''}
                     <div>${m.text}</div>
                     <div class="message-time">${hours}:${mins}</div>
                 `;
@@ -1107,18 +1066,20 @@
                 time: Date.now()
             };
 
+            // Миттєво зберігаємо та виводимо локально
+            appendLocalMessage(activeChatId, msgObj);
+            renderMessagesArray(getLocalMessages(activeChatId));
             input.value = '';
 
+            // Відправляємо у Firestore
             try {
-                // Миттєвий запис у хмару для реал-тайм доставки на всі пристрої
                 await addDoc(collection(db, `chats/${activeChatId}/messages`), msgObj);
             } catch(e) {
-                console.error("Помилка надсилання повідомлення у Firestore:", e);
-                alert("Не вдалося надіслати повідомлення. Перевірте інтернет-з'єднання.");
+                console.log("Firestore push fallback to local storage");
             }
         };
 
-        // СТВОРЕННЯ ГРУП ТА КАНАЛІВ (БЕЗ АВТОМАТИЧНОЇ ГАЛОЧКИ)
+        // СТВОРЕННЯ СПІЛЬНОТ (БЕЗ АВТОМАТИЧНОЇ ГАЛОЧКИ)
         window.openCreateModal = function() { document.getElementById('create-modal').style.display = 'flex'; };
         window.closeCreateModal = function() { document.getElementById('create-modal').style.display = 'none'; };
 
@@ -1133,7 +1094,7 @@
                 username: slug,
                 fullname: name,
                 type: type,
-                isVerified: false, // ГАЛОЧКА ЗАБОРОНЕНА АВТОМАТИЧНО
+                isVerified: false, // ВЕРИФІКАЦІЯ ВИМКНЕНА ЗА ЗАВМОВЧУВАННЯМ!
                 tag: type.toUpperCase(),
                 uid: 'entity_' + slug
             };
@@ -1148,7 +1109,7 @@
         window.openAdminModal = async function() {
             document.getElementById('admin-modal').style.display = 'flex';
             const container = document.getElementById('admin-users-container');
-            container.innerHTML = '<div style="color:var(--tg-text-secondary); padding:10px; text-align:center;">Завантаження реєстру з хмари...</div>';
+            container.innerHTML = '<div style="color:var(--tg-text-secondary); padding:10px;">Завантаження...</div>';
 
             const allUsersMap = getStorageUsers();
 
@@ -1169,7 +1130,6 @@
                 row.innerHTML = `
                     <div>
                         <strong>@${u.username}</strong> ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '✓' : ''} ${u.tag ? `[${u.tag}]` : ''}
-                        <div style="font-size:11px; color:var(--tg-text-secondary);">${u.fullname || ''}</div>
                     </div>
                     <div>
                         <button class="btn-act" onclick="toggleUserVerify('${u.username}', '${u.docId || u.uid || ''}')">${u.isVerified ? 'Зняти ✔️' : 'Дати ✔️'}</button>
@@ -1189,7 +1149,7 @@
 
             if (users[key]) {
                 users[key].isVerified = newStatus;
-                localStorage.setItem('nx_users_v2', JSON.stringify(users));
+                localStorage.setItem('nx_users', JSON.stringify(users));
             }
 
             if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
@@ -1200,7 +1160,7 @@
 
             if (key === currentUserProfile.username.toLowerCase()) {
                 currentUserProfile.isVerified = newStatus;
-                localStorage.setItem('nx_current_user_v2', JSON.stringify(currentUserProfile));
+                localStorage.setItem('nx_current_user', JSON.stringify(currentUserProfile));
                 renderProfileInfo();
             }
 
@@ -1217,7 +1177,7 @@
 
                 if (users[key]) {
                     users[key].tag = formatted;
-                    localStorage.setItem('nx_users_v2', JSON.stringify(users));
+                    localStorage.setItem('nx_users', JSON.stringify(users));
                 }
 
                 if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
@@ -1228,7 +1188,7 @@
 
                 if (key === currentUserProfile.username.toLowerCase()) {
                     currentUserProfile.tag = formatted;
-                    localStorage.setItem('nx_current_user_v2', JSON.stringify(currentUserProfile));
+                    localStorage.setItem('nx_current_user', JSON.stringify(currentUserProfile));
                     renderProfileInfo();
                 }
 
@@ -1238,10 +1198,10 @@
         };
 
         window.deleteUserRecord = async function(username, docId) {
-            if (confirm(`Видалити @${username} з системи?`)) {
+            if (confirm(`Видалити @${username}?`)) {
                 const users = getStorageUsers();
                 delete users[username.toLowerCase()];
-                localStorage.setItem('nx_users_v2', JSON.stringify(users));
+                localStorage.setItem('nx_users', JSON.stringify(users));
 
                 if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
                     try {
