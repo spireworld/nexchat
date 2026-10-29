@@ -3,750 +3,856 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexChat — Telegram Style Messenger</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>NexChat — Enterprise Web Application & Messenger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* ==========================================================================
-           1. СТИЛІ ТА ПАЛІТРА TELEGRAM (DARK THEME)
-           ========================================================================== */
+           1. CSS СИСТЕМА ТА ЗМІННІ ТЕМИ (TELEGRAM / DISCORD HIGH-END DESIGN)
+           ================================================================********** */
         :root {
-            --tg-bg-main: #0e1621;
-            --tg-bg-sidebar: #17212b;
-            --tg-bg-header: #17212b;
-            --tg-bg-input: #242f3d;
-            --tg-bg-hover: #202b36;
-            --tg-bg-active: #2b5278;
+            --bg-dark-900: #080b11;
+            --bg-dark-800: #0f172a;
+            --bg-dark-700: #1e293b;
+            --bg-dark-600: #334155;
             
-            --tg-color-accent: #5288c1;
-            --tg-color-accent-hover: #4374a5;
-            --tg-color-button: #2b5278;
+            --accent-primary: #3b82f6;
+            --accent-primary-hover: #2563eb;
+            --accent-secondary: #8b5cf6;
             
-            --tg-msg-in: #182533;
-            --tg-msg-out: #2b5278;
+            --admin-gold: #f59e0b;
+            --admin-gold-glow: rgba(245, 158, 11, 0.35);
+            --dev-purple: #a855f7;
+            --verified-blue: #0088cc;
             
-            --tg-text-primary: #f5f5f5;
-            --tg-text-secondary: #7f91a4;
-            --tg-text-muted: #6c7883;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dark: #64748b;
             
-            --tg-border: #101921;
-            --tg-danger: #e53935;
-            --tg-verified: #5288c1;
-            --admin-gold: #e5a93c;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color-active: rgba(59, 130, 246, 0.5);
             
-            --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-subtle: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 25px rgba(59, 130, 246, 0.25);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--font-family);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--tg-bg-main);
-            color: var(--tg-text-primary);
+            background-color: var(--bg-dark-900);
+            color: var(--text-main);
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             user-select: none;
         }
 
-        /* Scrollbar в стилі Telegram */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
 
         /* ==========================================================================
-           2. АВТОРИЗАЦІЯ ТА РЕЄСТРАЦІЯ
-           ========================================================================== */
-        .auth-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: var(--tg-bg-main);
+           2. ЕКРАН АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ
+           ================================================================********** */
+        .auth-screen {
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 50%, #080b11 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
             z-index: 9999;
         }
 
-        .auth-box {
-            background-color: var(--tg-bg-sidebar);
-            border: 1px solid var(--tg-border);
-            padding: 40px;
-            border-radius: 12px;
+        .auth-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            padding: 48px;
+            border-radius: var(--radius-xl);
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
-            text-align: center;
+            max-width: 460px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            animation: fadeInScale 0.4s ease-out;
         }
 
-        .auth-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--tg-text-primary);
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .auth-sub {
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .auth-logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .auth-logo h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-subtitle {
+            color: var(--text-muted);
             font-size: 14px;
-            color: var(--tg-text-secondary);
-            margin-bottom: 24px;
+            margin-bottom: 32px;
+            line-height: 1.5;
         }
 
         .auth-tabs {
             display: flex;
-            background: var(--tg-bg-main);
-            border-radius: 8px;
-            padding: 3px;
-            margin-bottom: 20px;
+            background: var(--bg-dark-900);
+            border-radius: var(--radius-md);
+            padding: 5px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border-color);
         }
 
         .auth-tabs button {
             flex: 1;
             background: none;
             border: none;
-            color: var(--tg-text-secondary);
-            padding: 10px;
+            color: var(--text-muted);
+            padding: 12px;
+            font-weight: 600;
             font-size: 14px;
-            font-weight: 500;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-smooth);
         }
 
         .auth-tabs button.active {
-            background-color: var(--tg-color-button);
+            background-color: var(--accent-primary);
             color: #ffffff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
         }
 
-        .form-group {
-            margin-bottom: 16px;
-            text-align: left;
+        .input-group {
+            margin-bottom: 20px;
         }
 
-        .form-group label {
+        .input-group label {
             display: block;
-            font-size: 12px;
-            color: var(--tg-color-accent);
-            margin-bottom: 6px;
-            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        .form-group input, .form-group select {
+        .input-group input, .input-group select {
             width: 100%;
-            background-color: var(--tg-bg-input);
-            border: 1px solid transparent;
-            padding: 12px;
-            border-radius: 8px;
-            color: var(--tg-text-primary);
-            font-size: 14px;
+            background-color: var(--bg-dark-900);
+            border: 1px solid var(--border-color);
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: var(--transition-smooth);
         }
 
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--tg-color-accent);
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .btn-primary {
+        .primary-btn {
             width: 100%;
-            background-color: var(--tg-color-button);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
             color: #ffffff;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: var(--transition-smooth);
             margin-top: 10px;
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.5);
         }
 
-        .btn-primary:hover {
-            background-color: var(--tg-color-accent-hover);
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(59, 130, 246, 0.6);
         }
 
-        .auth-error {
-            color: var(--tg-danger);
+        .error-msg {
+            color: var(--danger-color);
             font-size: 13px;
-            margin-top: 12px;
+            margin-top: 16px;
+            text-align: center;
+            font-weight: 600;
         }
 
         /* ==========================================================================
-           3. ОСНОВНИЙ ІНТЕРФЕЙС (TELEGRAM LAYOUT)
-           ========================================================================== */
-        .app-layout {
+           3. ОСНОВНИЙ ІНТЕРФЕЙС МЕСЕНДЖЕРА (LAYOUT)
+           ================================================================********** */
+        .app-container {
             display: flex;
             width: 100vw;
             height: 100vh;
         }
 
-        /* Sidebar (Ліва панель) */
+        /* Sidebar */
         .sidebar {
-            width: 360px;
-            background-color: var(--tg-bg-sidebar);
-            border-right: 1px solid var(--tg-border);
+            width: 380px;
+            background-color: var(--bg-dark-800);
+            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .sidebar-header {
-            height: 60px;
-            padding: 0 16px;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: var(--tg-bg-header);
-            border-bottom: 1px solid var(--tg-border);
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.5);
         }
 
-        .my-profile {
+        .user-profile-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             overflow: hidden;
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
-            background-color: var(--tg-color-accent);
+            width: 46px;
+            height: 46px;
+            background-color: var(--accent-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 700;
             color: #ffffff;
-            font-size: 16px;
+            font-size: 18px;
             flex-shrink: 0;
             text-transform: uppercase;
+            position: relative;
         }
 
         .avatar.dev-avatar {
-            background: linear-gradient(135deg, #e5a93c, #8e44ad);
-        }
-
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 16px;
-            height: 16px;
-            background-color: var(--tg-verified);
-            border-radius: 50%;
-            color: white;
-            font-size: 10px;
-            margin-left: 4px;
-            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--admin-gold), var(--dev-purple));
+            box-shadow: 0 0 20px var(--admin-gold-glow);
+            border: 2px solid var(--admin-gold);
         }
 
         .badge-tag {
             font-size: 10px;
-            font-weight: bold;
-            padding: 2px 5px;
-            border-radius: 4px;
-            margin-left: 4px;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-left: 6px;
             text-transform: uppercase;
-            background: var(--tg-bg-input);
-            color: var(--tg-color-accent);
-            border: 1px solid var(--tg-color-accent);
+            letter-spacing: 0.5px;
         }
 
-        .header-actions {
+        .badge-dev {
+            background: linear-gradient(90deg, #f59e0b, #a855f7);
+            color: #000000;
+        }
+
+        .badge-custom {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-primary);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* SVG Verified Checkmark Badge */
+        .verified-svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--accent-primary);
+            margin-left: 4px;
+            vertical-align: middle;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .header-btns {
             display: flex;
-            gap: 4px;
+            gap: 8px;
         }
 
-        .btn-icon {
+        .icon-btn {
             background: none;
             border: none;
-            color: var(--tg-text-secondary);
-            padding: 8px;
-            border-radius: 50%;
+            color: var(--text-muted);
             cursor: pointer;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            transition: var(--transition-smooth);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
         }
 
-        .btn-icon:hover {
-            background-color: var(--tg-bg-hover);
-            color: var(--tg-text-primary);
+        .icon-btn:hover {
+            background-color: var(--bg-dark-700);
+            color: var(--text-main);
         }
 
         .btn-admin {
+            background-color: rgba(245, 158, 11, 0.15);
             color: var(--admin-gold);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-size: 18px;
         }
 
-        /* Пошук та папки */
-        .search-bar {
-            padding: 10px 14px;
+        .btn-admin:hover {
+            background-color: var(--admin-gold);
+            color: #000000;
+            box-shadow: 0 0 15px var(--admin-gold-glow);
+        }
+
+        /* Folder Tabs */
+        .folder-tabs {
             display: flex;
-            gap: 8px;
-            background-color: var(--tg-bg-sidebar);
+            gap: 6px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            background: var(--bg-dark-800);
         }
 
-        .search-input-wrapper {
-            flex: 1;
-            background-color: var(--tg-bg-input);
-            border-radius: 18px;
-            padding: 6px 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-input-wrapper input {
+        .folder-btn {
             background: none;
             border: none;
-            color: var(--tg-text-primary);
-            outline: none;
+            color: var(--text-muted);
             font-size: 13px;
-            width: 100%;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-smooth);
         }
 
-        .btn-create-community {
-            background-color: var(--tg-bg-input);
+        .folder-btn:hover {
+            background-color: var(--bg-dark-700);
+            color: var(--text-main);
+        }
+
+        .folder-btn.active {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .search-container {
+            padding: 16px 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--bg-dark-900);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            transition: var(--transition-smooth);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .search-box input {
+            background: none;
             border: none;
-            color: var(--tg-text-primary);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 18px;
+            color: var(--text-main);
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .create-btn {
+            background-color: var(--bg-dark-700);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0 16px;
+            border-radius: var(--radius-md);
             cursor: pointer;
+            font-weight: 700;
+            font-size: 20px;
+            transition: var(--transition-smooth);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
         }
 
-        .btn-create-community:hover {
-            background-color: var(--tg-color-button);
+        .create-btn:hover {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #ffffff;
         }
 
-        .folders-bar {
-            display: flex;
-            padding: 0 10px;
-            border-bottom: 1px solid var(--tg-border);
-            background-color: var(--tg-bg-sidebar);
-            overflow-x: auto;
-        }
-
-        .folder-tab {
-            padding: 10px 12px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--tg-text-secondary);
-            background: none;
-            border: none;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            white-space: nowrap;
-        }
-
-        .folder-tab.active {
-            color: var(--tg-color-accent);
-            border-bottom-color: var(--tg-color-accent);
-        }
-
-        .chats-list {
+        .chat-list {
             flex: 1;
             overflow-y: auto;
         }
 
         .chat-item {
-            padding: 10px 14px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: var(--transition-smooth);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
 
         .chat-item:hover {
-            background-color: var(--tg-bg-hover);
+            background-color: var(--bg-dark-700);
         }
 
         .chat-item.active {
-            background-color: var(--tg-bg-active);
-        }
-
-        .chat-info {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .chat-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 3px;
-        }
-
-        .chat-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--tg-text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .chat-subtitle {
-            font-size: 12px;
-            color: var(--tg-text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            background-color: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid var(--accent-primary);
         }
 
         /* ==========================================================================
-           4. ПАНЕЛЬ ЧАТУ (ПОВІДОМЛЕННЯ)
-           ========================================================================== */
+           4. ЦЕНТРАЛЬНИЙ ЧАТ ТА ПОВІДОМЛЕННЯ
+           ================================================================********** */
         .chat-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: var(--tg-bg-main);
+            background-color: var(--bg-dark-900);
         }
 
-        .empty-chat-state {
+        .empty-chat {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--tg-text-muted);
-            gap: 12px;
+            color: var(--text-muted);
+            gap: 20px;
+            text-align: center;
+            padding: 40px;
         }
 
-        .empty-badge {
-            background-color: rgba(0, 0, 0, 0.3);
-            padding: 6px 16px;
-            border-radius: 12px;
-            font-size: 13px;
+        .empty-chat-icon {
+            width: 96px;
+            height: 96px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            border: 1px solid var(--border-color);
         }
 
-        .active-chat-container {
+        .active-chat {
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
         .chat-header {
-            height: 60px;
-            padding: 0 20px;
-            background-color: var(--tg-bg-header);
-            border-bottom: 1px solid var(--tg-border);
+            padding: 18px 24px;
+            background-color: var(--bg-dark-800);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .messages-box {
+        .messages-container {
             flex: 1;
-            padding: 20px;
+            padding: 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 14px;
+            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.6) 0%, var(--bg-dark-900) 100%);
         }
 
-        .message-bubble {
-            max-width: 500px;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            line-height: 1.4;
+        .message {
+            max-width: 60%;
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            line-height: 1.5;
             word-break: break-word;
+            box-shadow: var(--shadow-subtle);
             position: relative;
-            display: flex;
-            flex-direction: column;
+            animation: messageAppear 0.2s ease-out;
         }
 
-        .message-bubble.incoming {
-            background-color: var(--tg-msg-in);
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.incoming {
+            background-color: var(--bg-dark-800);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
         }
 
-        .message-bubble.outgoing {
-            background-color: var(--tg-msg-out);
+        .message.outgoing {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+            color: #ffffff;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
 
-        .message-time {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.5);
-            align-self: flex-end;
-            margin-top: 4px;
-            margin-left: 12px;
-        }
-
-        .chat-input-bar {
-            padding: 12px 20px;
-            background-color: var(--tg-bg-header);
+        .message-input-form {
+            padding: 20px 24px;
+            background-color: var(--bg-dark-800);
+            border-top: 1px solid var(--border-color);
             display: flex;
-            gap: 10px;
-            align-items: center;
+            gap: 14px;
         }
 
-        .chat-input-bar input {
+        .message-input-form input {
             flex: 1;
-            background-color: var(--tg-bg-input);
-            border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: var(--tg-text-primary);
+            background-color: var(--bg-dark-900);
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
             outline: none;
-            font-size: 14px;
+            font-size: 15px;
+            transition: var(--transition-smooth);
         }
 
-        .btn-send {
-            background-color: var(--tg-color-button);
-            color: white;
+        .message-input-form input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+            color: #ffffff;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 500;
+            padding: 0 28px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-send:hover {
-            background-color: var(--tg-color-accent-hover);
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
 
         /* ==========================================================================
-           5. МОДАЛЬНІ ВІКНА (АДМІНКА ТА СТВОРЕННЯ)
-           ========================================================================== */
-        .modal-bg {
+           5. МОДАЛЬНІ ВІКНА ТА АДМІН-ПАНЕЛЬ
+           ================================================================********** */
+        .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(8, 11, 17, 0.85);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 8000;
+            z-index: 9000;
+            backdrop-filter: blur(8px);
         }
 
         .modal-card {
-            background-color: var(--tg-bg-sidebar);
-            border: 1px solid var(--tg-border);
-            border-radius: 12px;
+            background-color: var(--bg-dark-800);
+            border: 1px solid var(--admin-gold);
+            border-radius: var(--radius-xl);
             width: 100%;
-            max-width: 600px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
+            max-width: 760px;
+            padding: 36px;
+            box-shadow: 0 0 60px var(--admin-gold-glow);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeInScale 0.3s ease-out;
         }
 
         .modal-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--tg-border);
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
         }
 
-        .admin-users-list {
-            flex: 1;
-            overflow-y: auto;
-            background-color: var(--tg-bg-main);
-            border-radius: 8px;
-            padding: 8px;
-            margin-top: 12px;
-        }
-
-        .admin-user-row {
+        .modal-header h2 {
+            color: var(--admin-gold);
+            font-size: 24px;
+            font-weight: 800;
             display: flex;
             align-items: center;
+            gap: 12px;
+        }
+
+        .users-list-box {
+            background: var(--bg-dark-900);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            max-height: 420px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+
+        .user-row {
+            display: flex;
             justify-content: space-between;
-            padding: 10px 12px;
+            align-items: center;
+            padding: 14px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 13px;
+            font-size: 14px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-smooth);
         }
 
-        .btn-act {
-            background-color: var(--tg-bg-input);
-            border: 1px solid var(--tg-border);
-            color: var(--tg-text-primary);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
+        .user-row:hover {
+            background-color: var(--bg-dark-700);
+        }
+
+        .admin-action-btn {
+            background: var(--bg-dark-700);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
             cursor: pointer;
-            margin-left: 4px;
+            margin-left: 8px;
+            font-weight: 700;
+            transition: var(--transition-smooth);
         }
 
-        .btn-act:hover {
-            background-color: var(--tg-color-button);
+        .admin-action-btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #ffffff;
         }
 
-        .btn-act.danger {
-            color: var(--tg-danger);
-            border-color: var(--tg-danger);
+        .admin-action-btn.danger {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
         }
 
-        .btn-act.danger:hover {
-            background-color: var(--tg-danger);
-            color: white;
+        .admin-action-btn.danger:hover {
+            background: var(--danger-color);
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
 
-    <!-- ВІКНО АВТОРИЗАЦІЇ -->
-    <div id="auth-screen" class="auth-overlay">
-        <div class="auth-box">
-            <h2 class="auth-title">NexChat</h2>
-            <p class="auth-sub">Увійдіть за допомогою username</p>
-
+    <!-- ЕКРАН АВТОРИЗАЦІЇ -->
+    <div id="auth-screen" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <h1>NexChat</h1>
+            </div>
+            <p class="auth-subtitle">Автентифікація та реєстрація за унікальним Нікнеймом</p>
+            
             <div class="auth-tabs">
-                <button id="tab-login" class="active" onclick="switchAuthMode('login')">Вхід</button>
-                <button id="tab-register" onclick="switchAuthMode('register')">Реєстрація</button>
+                <button id="tab-signin" class="active" onclick="switchTab('signin')">Увійти</button>
+                <button id="tab-signup" onclick="switchTab('signup')">Реєстрація</button>
             </div>
 
-            <form onsubmit="handleAuthSubmit(event)">
-                <div class="form-group">
-                    <label>Username (Нікнейм)</label>
-                    <input type="text" id="input-username" required placeholder="наприклад: Kriexz">
+            <form onsubmit="handleAuth(event)">
+                <div class="input-group">
+                    <label>Нікнейм (Username)</label>
+                    <input type="text" id="auth-username" required placeholder="Введіть ваш нік (наприклад: Kriexz)">
                 </div>
-                <div id="group-fullname" class="form-group" style="display: none;">
+                <div id="fullname-group" class="input-group" style="display: none;">
                     <label>Повне ім'я</label>
-                    <input type="text" id="input-fullname" placeholder="Ваше ім'я">
+                    <input type="text" id="auth-fullname" placeholder="Ваше ім'я або назва">
                 </div>
-                <div class="form-group">
+                <div class="input-group">
                     <label>Пароль</label>
-                    <input type="password" id="input-password" required placeholder="••••••••">
+                    <input type="password" id="auth-password" required placeholder="••••••••">
                 </div>
-                <button type="submit" id="auth-btn" class="btn-primary">Увійти</button>
-                <div id="auth-err-msg" class="auth-error"></div>
+                <button type="submit" id="auth-submit-btn" class="primary-btn">Увійти</button>
+                <p id="auth-error" class="error-msg"></p>
             </form>
         </div>
     </div>
 
     <!-- ГОЛОВНИЙ ІНТЕРФЕЙС -->
-    <div id="app-screen" class="app-layout" style="display: none;">
-        <!-- СІДЕБАР -->
+    <div id="app-screen" class="app-container" style="display: none;">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="my-profile">
+                <div class="user-profile-info">
                     <div id="my-avatar" class="avatar">U</div>
                     <div style="overflow: hidden;">
-                        <div style="display: flex; align-items: center;">
-                            <span id="my-name" style="font-weight: 500; font-size: 14px;">User</span>
-                            <span id="my-verified-icon" class="verified-badge" style="display: none;">✓</span>
-                            <span id="my-dev-tag" class="badge-tag" style="display: none;">DEV 👑</span>
-                            <span id="my-custom-tag" class="badge-tag" style="display: none;"></span>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span id="my-display-name" style="font-weight: 700; font-size: 15px;">Користувач</span>
+                            <!-- SVG Verified Checkmark -->
+                            <span id="my-verified" style="display: none;">
+                                <svg class="verified-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            </span>
+                            <span id="dev-badge" class="badge-tag badge-dev" style="display: none;">РОЗРОБНИК 👑</span>
+                            <span id="custom-badge" class="badge-tag badge-custom" style="display: none;"></span>
                         </div>
-                        <div id="my-tag" style="font-size: 12px; color: var(--tg-text-secondary);">@user</div>
+                        <span id="my-username-tag" style="font-size: 12px; color: var(--text-muted);">@user</span>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <button id="btn-admin-panel" class="btn-icon btn-admin" onclick="openAdminModal()" style="display: none;" title="Панель Адміна">👑</button>
-                    <button class="btn-icon" onclick="userLogout()" title="Вийти">
+                <div class="header-btns">
+                    <button id="admin-btn" class="icon-btn btn-admin" onclick="openAdminModal()" style="display: none;" title="Панель Адміністратора">👑</button>
+                    <button class="icon-btn" onclick="logout()" title="Вийти">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                 </div>
             </div>
 
-            <div class="folders-bar">
-                <button class="folder-tab active" onclick="switchFolderTab('all', this)">Чати</button>
-                <button class="folder-tab" onclick="switchFolderTab('personal', this)">Особисті</button>
-                <button class="folder-tab" onclick="switchFolderTab('group', this)">Групи</button>
-                <button class="folder-tab" onclick="switchFolderTab('channel', this)">Канали</button>
+            <!-- Вкладки Папок -->
+            <div class="folder-tabs">
+                <button class="folder-btn active" onclick="switchFolder('all', this)">Чати</button>
+                <button class="folder-btn" onclick="switchFolder('personal', this)">Особисті</button>
+                <button class="folder-btn" onclick="switchFolder('groups', this)">Групи</button>
+                <button class="folder-btn" onclick="switchFolder('channels', this)">Канали</button>
             </div>
 
-            <div class="search-bar">
-                <div class="search-input-wrapper">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="global-search" placeholder="Пошук людей та каналів..." oninput="onSearchInput(this.value)">
+            <div class="search-container">
+                <div class="search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search-input" placeholder="Пошук за @username..." oninput="handleSearchInput(this.value)">
                 </div>
-                <button class="btn-create-community" onclick="openCreateModal()" title="Створити групу чи канал">+</button>
+                <button class="create-btn" onclick="openCreateModal()" title="Створити групу чи канал">+</button>
             </div>
 
-            <div class="chats-list" id="chats-list-box"></div>
+            <div class="chat-list" id="chat-list-container">
+                <!-- Динамічний список збережених чатів чи пошуку -->
+            </div>
         </aside>
 
-        <!-- ЧАТ -->
         <main class="chat-area">
-            <div id="empty-chat-view" class="empty-chat-state">
-                <div class="empty-badge">Оберіть чат для початку спілкування</div>
+            <div id="empty-state" class="empty-chat">
+                <div class="empty-chat-icon">💬</div>
+                <h2 style="font-size: 24px; font-weight: 800; color: #ffffff;">NexChat Messenger</h2>
+                <p style="max-width: 360px; line-height: 1.6;">Скористайтеся пошуком ліворуч, щоб знайти співрозмовника або спільноту за юзернеймом.</p>
             </div>
 
-            <div id="active-chat-view" class="active-chat-container" style="display: none;">
+            <div id="active-chat-box" class="active-chat" style="display: none;">
                 <header class="chat-header">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div id="active-chat-avatar" class="avatar">#</div>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div id="chat-avatar" class="avatar">#</div>
                         <div>
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <h3 id="active-chat-title" style="font-size: 15px; font-weight: 500;">Чат</h3>
-                                <span id="active-chat-verified" class="verified-badge" style="display: none;">✓</span>
+                                <h3 id="chat-title" style="font-size: 16px; font-weight: 700;">Чат</h3>
+                                <span id="chat-verified" style="display: none;">
+                                    <svg class="verified-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </span>
                             </div>
-                            <span style="font-size: 12px; color: var(--tg-text-secondary);">в мережі</span>
+                            <span style="font-size: 12px; color: var(--success-color); font-weight: 600;">у мережі</span>
                         </div>
                     </div>
                 </header>
 
-                <div class="messages-box" id="messages-box"></div>
+                <div class="messages-container" id="messages-box">
+                    <!-- Динамічні повідомлення -->
+                </div>
 
-                <form class="chat-input-bar" onsubmit="handleSendMessage(event)">
-                    <input type="text" id="msg-input" placeholder="Написати повідомлення..." autocomplete="off">
-                    <button type="submit" class="btn-send">Надіслати</button>
+                <form class="message-input-form" onsubmit="sendMessage(event)">
+                    <input type="text" id="message-input" placeholder="Написати повідомлення..." autocomplete="off">
+                    <button type="submit" class="send-btn">Надіслати</button>
                 </form>
             </div>
         </main>
     </div>
 
-    <!-- МОДАЛКА АДМІНКИ -->
-    <div id="admin-modal" class="modal-bg">
+    <!-- МОДАЛЬНЕ ВІКНО АДМІНІСТРАТОРА -->
+    <div id="admin-modal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 style="color: var(--admin-gold);">👑 Панель Адміністратора</h3>
-                <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="closeAdminModal()">×</button>
+                <h2>👑 Панель Адміністратора NexChat</h2>
+                <button style="background:none; border:none; color:white; font-size:26px; cursor:pointer;" onclick="closeAdminModal()">×</button>
             </div>
-            <p style="font-size: 13px; color: var(--tg-text-secondary);">Управління галочками верифікації та кастомними тегами у базі.</p>
-            <div class="admin-users-list" id="admin-users-container"></div>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Повний контроль над верифікацією ✔️, кастомними тегами та акаунтами користувачів у базі Firestore.</p>
+            
+            <div style="background: var(--bg-dark-900); padding: 18px; border-radius: var(--radius-md); margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border-color);">
+                <span style="font-weight: 600;">Усього акаунтів та спільнот у базі:</span>
+                <span id="admin-user-count" style="color: var(--admin-gold); font-weight: 800; font-size: 22px;">0</span>
+            </div>
+
+            <h4 style="margin-bottom: 10px; font-weight: 700;">Реєстр користувачів:</h4>
+            <div class="users-list-box" id="admin-users-list"></div>
         </div>
     </div>
 
-    <!-- МОДАЛКА СТВОРЕННЯ ГРУПИ/КАНАЛУ -->
-    <div id="create-modal" class="modal-bg">
-        <div class="modal-card" style="max-width: 380px;">
+    <!-- МОДАЛЬНЕ ВІКНО СТВОРЕННЯ ГРУПИ/КАНАЛУ -->
+    <div id="create-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 440px;">
             <div class="modal-header">
-                <h3>Створити спільноту</h3>
-                <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="closeCreateModal()">×</button>
+                <h2>Створити спільноту</h2>
+                <button style="background:none; border:none; color:white; font-size:26px; cursor:pointer;" onclick="closeCreateModal()">×</button>
             </div>
-            <form onsubmit="handleCreateCommunity(event)">
-                <div class="form-group">
+            <form onsubmit="handleCreateChat(event)">
+                <div class="input-group">
                     <label>Тип</label>
-                    <select id="create-entity-type">
+                    <select id="create-type">
                         <option value="group">👥 Група</option>
                         <option value="channel">📢 Канал</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Назва спільноти</label>
-                    <input type="text" id="create-entity-name" required placeholder="Наприклад: Новини IT">
+                <div class="input-group">
+                    <label>Назва</label>
+                    <input type="text" id="create-name" required placeholder="Наприклад: IT Community Ukraine">
                 </div>
-                <button type="submit" class="btn-primary">Створити</button>
+                <button type="submit" class="primary-btn">Створити спільноту</button>
             </form>
         </div>
     </div>
 
-    <!-- FIREBASE ТА СКРИПТ ЛОГІКИ -->
+    <!-- FIREBASE ТА ОСНОВНА ЛОГІКА -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -765,74 +871,66 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let authMode = 'login';
-        let currentUserProfile = null;
-        let activeChatTarget = null;
+        let mode = 'signin';
+        let currentUser = null;
+        let currentProfile = null;
         let activeChatId = null;
-        let msgUnsubscribe = null;
+        let activeChatUser = null;
+        let unsubscribeMsg = null;
         let currentFolder = 'all';
 
-        // Локальне збереження для 100% стабільності та миттєвого збереження
-        function getStorageUsers() {
-            return JSON.parse(localStorage.getItem('nx_users') || '{}');
+        // Локальне збереження для автономного резервного копіювання
+        function getLocalUsers() {
+            return JSON.parse(localStorage.getItem('nexchat_local_users') || '{}');
         }
-        function saveStorageUser(username, data) {
-            const users = getStorageUsers();
+        function saveLocalUser(username, data) {
+            const users = getLocalUsers();
             users[username.toLowerCase()] = data;
-            localStorage.setItem('nx_users', JSON.stringify(users));
+            localStorage.setItem('nexchat_local_users', JSON.stringify(users));
         }
 
-        function getStorageActiveChats() {
-            const k = `nx_chats_${currentUserProfile ? currentUserProfile.username.toLowerCase() : 'guest'}`;
-            return JSON.parse(localStorage.getItem(k) || '[]');
+        // Отримання збережених активних чатів
+        function getActiveChats() {
+            const key = `nexchat_active_chats_${currentProfile ? currentProfile.username.toLowerCase() : 'guest'}`;
+            return JSON.parse(localStorage.getItem(key) || '[]');
         }
-        function saveStorageActiveChat(targetObj) {
-            const k = `nx_chats_${currentUserProfile.username.toLowerCase()}`;
-            let list = getStorageActiveChats();
-            if(!list.some(x => x.username.toLowerCase() === targetObj.username.toLowerCase())) {
-                list.push(targetObj);
-                localStorage.setItem(k, JSON.stringify(list));
+        function saveActiveChat(userObj) {
+            const key = `nexchat_active_chats_${currentProfile.username.toLowerCase()}`;
+            let chats = getActiveChats();
+            if(!chats.some(c => c.username.toLowerCase() === userObj.username.toLowerCase())) {
+                chats.push(userObj);
+                localStorage.setItem(key, JSON.stringify(chats));
             }
         }
 
-        // Локальне збереження повідомлень (захист від випадання мережі)
-        function getLocalMessages(chatId) {
-            return JSON.parse(localStorage.getItem(`nx_msgs_${chatId}`) || '[]');
-        }
-        function appendLocalMessage(chatId, msgObj) {
-            let msgs = getLocalMessages(chatId);
-            msgs.push(msgObj);
-            localStorage.setItem(`nx_msgs_${chatId}`, JSON.stringify(msgs));
-        }
-
-        window.switchAuthMode = function(m) {
-            authMode = m;
-            document.getElementById('group-fullname').style.display = (m === 'register') ? 'block' : 'none';
-            document.getElementById('auth-btn').innerText = (m === 'register') ? 'Зареєструватися' : 'Увійти';
-            document.getElementById('tab-login').className = (m === 'login') ? 'active' : '';
-            document.getElementById('tab-register').className = (m === 'register') ? 'active' : '';
-            document.getElementById('auth-err-msg').innerText = '';
+        window.switchTab = function(t) {
+            mode = t;
+            document.getElementById('fullname-group').style.display = (t === 'signup') ? 'block' : 'none';
+            document.getElementById('auth-submit-btn').innerText = (t === 'signup') ? 'Зареєструватися' : 'Увійти';
+            document.getElementById('tab-signin').className = (t === 'signin') ? 'active' : '';
+            document.getElementById('tab-signup').className = (t === 'signup') ? 'active' : '';
+            document.getElementById('auth-error').innerText = '';
         };
 
-        window.handleAuthSubmit = async function(e) {
+        window.handleAuth = async function(e) {
             e.preventDefault();
-            const username = document.getElementById('input-username').value.trim();
-            const fullname = document.getElementById('input-fullname').value.trim();
-            const password = document.getElementById('input-password').value;
-            const errEl = document.getElementById('auth-err-msg');
+            const username = document.getElementById('auth-username').value.trim();
+            const fullname = document.getElementById('auth-fullname').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const errEl = document.getElementById('auth-error');
             errEl.innerText = '';
 
             const usernameLower = username.toLowerCase();
             const email = `${usernameLower}@nexchat.app`;
 
             try {
-                if (authMode === 'register') {
+                if (mode === 'signup') {
                     const isDev = (usernameLower === 'kriexz');
                     const profileData = {
                         username: username,
                         fullname: fullname || username,
                         isDev: isDev,
-                        isVerified: isDev, // Галочка ТІЛЬКИ для Kriexz!
+                        isVerified: isDev, // Галочка верифікації за замовчуванням тільки для Kriexz!
                         tag: isDev ? 'OWNER' : '',
                         type: 'personal'
                     };
@@ -845,20 +943,20 @@
                         profileData.uid = 'local_' + usernameLower;
                     }
 
-                    saveStorageUser(usernameLower, profileData);
-                    localStorage.setItem('nx_current_user', JSON.stringify(profileData));
+                    saveLocalUser(usernameLower, profileData);
+                    localStorage.setItem('nexchat_active_user', JSON.stringify(profileData));
                     location.reload();
                 } else {
-                    const storageUsers = getStorageUsers();
-                    let pData = storageUsers[usernameLower];
-
-                    if(!pData) {
+                    const localUsers = getLocalUsers();
+                    let pData = localUsers[usernameLower];
+                    
+                    if (!pData) {
                         const isDev = (usernameLower === 'kriexz');
                         pData = { username: username, fullname: username, isDev: isDev, isVerified: isDev, tag: isDev ? 'OWNER' : '', type: 'personal', uid: 'local_' + usernameLower };
-                        saveStorageUser(usernameLower, pData);
+                        saveLocalUser(usernameLower, pData);
                     }
-
-                    localStorage.setItem('nx_current_user', JSON.stringify(pData));
+                    
+                    localStorage.setItem('nexchat_active_user', JSON.stringify(pData));
                     try {
                         await signInWithEmailAndPassword(auth, email, password);
                     } catch(e) {}
@@ -870,248 +968,74 @@
             }
         };
 
-        window.userLogout = function() {
-            localStorage.removeItem('nx_current_user');
+        window.logout = function() {
+            localStorage.removeItem('nexchat_active_user');
             signOut(auth);
             location.reload();
         };
 
         onAuthStateChanged(auth, async (user) => {
-            const cached = JSON.parse(localStorage.getItem('nx_current_user') || 'null');
+            const cached = JSON.parse(localStorage.getItem('nexchat_active_user') || 'null');
+            
             if (user || cached) {
-                currentUserProfile = cached || { username: 'Kriexz', fullname: 'Kriexz', isDev: true, isVerified: true, tag: 'OWNER' };
-                saveStorageUser(currentUserProfile.username.toLowerCase(), currentUserProfile);
+                currentUser = user || { uid: cached ? cached.uid || 'local' : 'local' };
+                currentProfile = cached || { username: 'Kriexz', fullname: 'Kriexz', isDev: true, isVerified: true, tag: 'OWNER' };
+
+                saveLocalUser(currentProfile.username.toLowerCase(), currentProfile);
 
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'flex';
 
-                renderProfileInfo();
-                renderChatsList();
+                updateProfileUI();
+                loadChatsList();
             } else {
                 document.getElementById('auth-screen').style.display = 'flex';
                 document.getElementById('app-screen').style.display = 'none';
             }
         });
 
-        function renderProfileInfo() {
-            const isKriexz = (currentUserProfile.username.toLowerCase() === 'kriexz' || currentUserProfile.isDev);
+        function updateProfileUI() {
+            const isKriexz = (currentProfile.username.toLowerCase() === 'kriexz' || currentProfile.isDev);
+            
+            document.getElementById('my-display-name').innerText = currentProfile.fullname || currentProfile.username;
+            document.getElementById('my-username-tag').innerText = `@${currentProfile.username}`;
+            document.getElementById('my-avatar').innerText = currentProfile.username[0].toUpperCase();
 
-            document.getElementById('my-name').innerText = currentUserProfile.fullname || currentUserProfile.username;
-            document.getElementById('my-tag').innerText = `@${currentUserProfile.username}`;
-            document.getElementById('my-avatar').innerText = currentUserProfile.username[0].toUpperCase();
-
-            document.getElementById('my-verified-icon').style.display = (currentUserProfile.isVerified || isKriexz) ? 'inline-flex' : 'none';
+            document.getElementById('my-verified').style.display = (currentProfile.isVerified || isKriexz) ? 'inline-flex' : 'none';
 
             if (isKriexz) {
                 document.getElementById('my-avatar').classList.add('dev-avatar');
-                document.getElementById('my-dev-tag').style.display = 'inline-block';
-                document.getElementById('btn-admin-panel').style.display = 'flex';
+                document.getElementById('dev-badge').style.display = 'inline-block';
+                document.getElementById('admin-btn').style.display = 'flex';
             } else {
                 document.getElementById('my-avatar').classList.remove('dev-avatar');
-                document.getElementById('my-dev-tag').style.display = 'none';
-                document.getElementById('btn-admin-panel').style.display = 'none';
+                document.getElementById('dev-badge').style.display = 'none';
+                document.getElementById('admin-btn').style.display = 'none';
             }
 
-            if (currentUserProfile.tag && !isKriexz) {
-                const tagEl = document.getElementById('my-custom-tag');
-                tagEl.innerText = currentUserProfile.tag;
-                tagEl.style.display = 'inline-block';
+            if (currentProfile.tag && !isKriexz) {
+                const cTag = document.getElementById('custom-badge');
+                cTag.innerText = currentProfile.tag;
+                cTag.style.display = 'inline-block';
             } else {
-                document.getElementById('my-custom-tag').style.display = 'none';
+                document.getElementById('custom-badge').style.display = 'none';
             }
         }
 
-        window.switchFolderTab = function(type, btn) {
-            currentFolder = type;
-            document.querySelectorAll('.folder-tab').forEach(b => b.classList.remove('active'));
+        window.switchFolder = function(folder, btn) {
+            currentFolder = folder;
+            document.querySelectorAll('.folder-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            renderChatsList();
+            loadChatsList();
         };
 
-        async function renderChatsList(searchVal = '') {
-            const container = document.getElementById('chats-list-box');
+        // Завантаження чатів за замовчуванням або з пошуку
+        async function loadChatsList(searchQuery = '') {
+            const container = document.getElementById('chat-list-container');
             container.innerHTML = '';
 
-            const localUsers = getStorageUsers();
-            let allMap = { ...localUsers };
-
-            try {
-                const snap = await getDocs(collection(db, 'profiles'));
-                snap.forEach(d => {
-                    const u = d.data();
-                    allMap[u.username.toLowerCase()] = { ...u, docId: d.id };
-                });
-            } catch(e) {}
-
-            let list = [];
-
-            if (searchVal.trim() !== '') {
-                const q = searchVal.toLowerCase().replace('@', '');
-                list = Object.values(allMap).filter(u =>
-                    u.username.toLowerCase().includes(q) ||
-                    (u.fullname && u.fullname.toLowerCase().includes(q))
-                );
-            } else {
-                list = getStorageActiveChats();
-            }
-
-            if (list.length === 0) {
-                container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--tg-text-secondary); font-size: 12px;">Немає чатів. Скористайтеся пошуком вище.</div>`;
-                return;
-            }
-
-            list.forEach(u => {
-                if (u.username.toLowerCase() === currentUserProfile.username.toLowerCase() && u.type === 'personal') return;
-
-                if (currentFolder === 'personal' && u.type && u.type !== 'personal') return;
-                if (currentFolder === 'group' && u.type !== 'group') return;
-                if (currentFolder === 'channel' && u.type !== 'channel') return;
-
-                const item = document.createElement('div');
-                item.className = 'chat-item';
-                item.innerHTML = `
-                    <div class="avatar ${u.username.toLowerCase() === 'kriexz' ? 'dev-avatar' : ''}">${u.username[0].toUpperCase()}</div>
-                    <div class="chat-info">
-                        <div class="chat-title-row">
-                            <span class="chat-name">
-                                ${u.fullname || u.username}
-                                ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '<span class="verified-badge">✓</span>' : ''}
-                                ${u.tag ? `<span class="badge-tag">${u.tag}</span>` : ''}
-                            </span>
-                        </div>
-                        <div class="chat-subtitle">${u.type === 'channel' ? '📢 Канал' : u.type === 'group' ? '👥 Група' : '@' + u.username}</div>
-                    </div>
-                `;
-                item.onclick = () => {
-                    saveStorageActiveChat(u);
-                    openChatView(u);
-                };
-                container.appendChild(item);
-            });
-        }
-
-        window.onSearchInput = function(val) {
-            renderChatsList(val);
-        };
-
-        // ВІДКРИТТЯ ЧАТУ ТА ГАРАНТОВАНЕ ВІДОБРАЖЕННЯ ПОВІДОМЛЕНЬ
-        function openChatView(targetObj) {
-            activeChatTarget = targetObj;
-            activeChatId = [currentUserProfile.username.toLowerCase(), targetObj.username.toLowerCase()].sort().join('_');
-
-            document.getElementById('empty-chat-view').style.display = 'none';
-            document.getElementById('active-chat-view').style.display = 'flex';
-
-            document.getElementById('active-chat-title').innerText = targetObj.fullname || targetObj.username;
-            document.getElementById('active-chat-avatar').innerText = targetObj.username[0].toUpperCase();
-            document.getElementById('active-chat-verified').style.display = (targetObj.isVerified || targetObj.username.toLowerCase() === 'kriexz') ? 'inline-flex' : 'none';
-
-            const msgBox = document.getElementById('messages-box');
-            msgBox.innerHTML = '';
-
-            if (msgUnsubscribe) msgUnsubscribe();
-
-            // Читаємо спочатку локальні повідомлення для швидкого завантаження
-            const localMsgs = getLocalMessages(activeChatId);
-            renderMessagesArray(localMsgs);
-
-            try {
-                // Прямий підписочний слухач Firestore без складених фільтрів
-                msgUnsubscribe = onSnapshot(collection(db, `chats/${activeChatId}/messages`), (snapshot) => {
-                    let remoteMsgs = [];
-                    snapshot.forEach(d => {
-                        remoteMsgs.push(d.data());
-                    });
-
-                    if (remoteMsgs.length > 0) {
-                        // Сортування за таймштампом
-                        remoteMsgs.sort((a, b) => (a.time || 0) - (b.time || 0));
-                        localStorage.setItem(`nx_msgs_${activeChatId}`, JSON.stringify(remoteMsgs));
-                        renderMessagesArray(remoteMsgs);
-                    }
-                });
-            } catch(e) {
-                console.error("Firestore error:", e);
-            }
-        }
-
-        function renderMessagesArray(arr) {
-            const msgBox = document.getElementById('messages-box');
-            msgBox.innerHTML = '';
-            arr.forEach(m => {
-                const dateObj = new Date(m.time || Date.now());
-                const hours = dateObj.getHours().toString().padStart(2, '0');
-                const mins = dateObj.getMinutes().toString().padStart(2, '0');
-
-                const div = document.createElement('div');
-                div.className = `message-bubble ${m.sender === currentUserProfile.username ? 'outgoing' : 'incoming'}`;
-                div.innerHTML = `
-                    <div>${m.text}</div>
-                    <div class="message-time">${hours}:${mins}</div>
-                `;
-                msgBox.appendChild(div);
-            });
-            msgBox.scrollTop = msgBox.scrollHeight;
-        }
-
-        window.handleSendMessage = async function(e) {
-            e.preventDefault();
-            const input = document.getElementById('msg-input');
-            const text = input.value.trim();
-            if (!text || !activeChatId) return;
-
-            const msgObj = {
-                text: text,
-                sender: currentUserProfile.username,
-                time: Date.now()
-            };
-
-            // Миттєво зберігаємо та виводимо локально
-            appendLocalMessage(activeChatId, msgObj);
-            renderMessagesArray(getLocalMessages(activeChatId));
-            input.value = '';
-
-            // Відправляємо у Firestore
-            try {
-                await addDoc(collection(db, `chats/${activeChatId}/messages`), msgObj);
-            } catch(e) {
-                console.log("Firestore push fallback to local storage");
-            }
-        };
-
-        // СТВОРЕННЯ СПІЛЬНОТ (БЕЗ АВТОМАТИЧНОЇ ГАЛОЧКИ)
-        window.openCreateModal = function() { document.getElementById('create-modal').style.display = 'flex'; };
-        window.closeCreateModal = function() { document.getElementById('create-modal').style.display = 'none'; };
-
-        window.handleCreateCommunity = function(e) {
-            e.preventDefault();
-            const type = document.getElementById('create-entity-type').value;
-            const name = document.getElementById('create-entity-name').value.trim();
-            if(!name) return;
-
-            const slug = name.toLowerCase().replace(/\s+/g, '_');
-            const newEntity = {
-                username: slug,
-                fullname: name,
-                type: type,
-                isVerified: false, // ВЕРИФІКАЦІЯ ВИМКНЕНА ЗА ЗАВМОВЧУВАННЯМ!
-                tag: type.toUpperCase(),
-                uid: 'entity_' + slug
-            };
-
-            saveStorageUser(slug, newEntity);
-            saveStorageActiveChat(newEntity);
-            closeCreateModal();
-            renderChatsList();
-        };
-
-        // АДМІН-ПАНЕЛЬ KRIEXZ
-        window.openAdminModal = async function() {
-            document.getElementById('admin-modal').style.display = 'flex';
-            const container = document.getElementById('admin-users-container');
-            container.innerHTML = '<div style="color:var(--tg-text-secondary); padding:10px;">Завантаження...</div>';
-
-            const allUsersMap = getStorageUsers();
+            const localUsers = getLocalUsers();
+            let allUsersMap = { ...localUsers };
 
             try {
                 const snap = await getDocs(collection(db, 'profiles'));
@@ -1121,35 +1045,202 @@
                 });
             } catch(e) {}
 
-            const list = Object.values(allUsersMap);
-            container.innerHTML = '';
+            let listToRender = [];
 
-            list.forEach(u => {
-                const row = document.createElement('div');
-                row.className = 'admin-user-row';
-                row.innerHTML = `
-                    <div>
-                        <strong>@${u.username}</strong> ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '✓' : ''} ${u.tag ? `[${u.tag}]` : ''}
-                    </div>
-                    <div>
-                        <button class="btn-act" onclick="toggleUserVerify('${u.username}', '${u.docId || u.uid || ''}')">${u.isVerified ? 'Зняти ✔️' : 'Дати ✔️'}</button>
-                        <button class="btn-act" onclick="setUserTagPrompt('${u.username}', '${u.docId || u.uid || ''}')">Тег</button>
-                        <button class="btn-act danger" onclick="deleteUserRecord('${u.username}', '${u.docId || u.uid || ''}')">Видалити</button>
+            if (searchQuery.trim() !== '') {
+                // ПУБЛІЧНИЙ ПОШУК По усім акаунтам у базі
+                const qLower = searchQuery.toLowerCase().replace('@', '');
+                listToRender = Object.values(allUsersMap).filter(u => 
+                    u.username.toLowerCase().includes(qLower) || 
+                    (u.fullname && u.fullname.toLowerCase().includes(qLower))
+                );
+            } else {
+                // СПИСОК АКТИВНИХ ЧАТІВ (Тільки ті, з якими списувалися)
+                listToRender = getActiveChats();
+            }
+
+            if (listToRender.length === 0) {
+                if (searchQuery.trim() !== '') {
+                    container.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px;">Нічого не знайдено за запитом "${searchQuery}"</div>`;
+                } else {
+                    container.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px; line-height: 1.5;">У вас поки немає чатів.<br>Введіть @username в пошук вище, щоб знайти людину.</div>`;
+                }
+                return;
+            }
+
+            listToRender.forEach(u => {
+                if (u.username.toLowerCase() === currentProfile.username.toLowerCase() && u.type === 'personal') return;
+
+                if (currentFolder === 'personal' && u.type && u.type !== 'personal') return;
+                if (currentFolder === 'groups' && u.type !== 'group') return;
+                if (currentFolder === 'channels' && u.type !== 'channel') return;
+
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                item.innerHTML = `
+                    <div class="avatar ${u.username.toLowerCase() === 'kriexz' ? 'dev-avatar' : ''}">${u.username[0].toUpperCase()}</div>
+                    <div style="overflow:hidden;">
+                        <div style="font-weight: 700; display:flex; align-items:center; gap:4px;">
+                            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${u.fullname || u.username}</span>
+                            ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '<svg class="verified-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>' : ''}
+                            ${u.tag ? `<span class="badge-tag badge-custom">${u.tag}</span>` : ''}
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">${u.type === 'channel' ? '📢 Канал' : u.type === 'group' ? '👥 Група' : '@' + u.username}</div>
                     </div>
                 `;
-                container.appendChild(row);
+                item.onclick = () => {
+                    saveActiveChat(u);
+                    openChat(u);
+                };
+                container.appendChild(item);
+            });
+        }
+
+        window.handleSearchInput = function(val) {
+            loadChatsList(val);
+        };
+
+        // Відкриття та синхронізація чату
+        function openChat(userObj) {
+            activeChatUser = userObj;
+            
+            // Алфавітний унікальний ID для миттєвої двосторонньої синхронізації між двома акаунтами
+            activeChatId = [currentProfile.username.toLowerCase(), userObj.username.toLowerCase()].sort().join('_');
+
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('active-chat-box').style.display = 'flex';
+            document.getElementById('chat-title').innerText = userObj.fullname || userObj.username;
+            document.getElementById('chat-avatar').innerText = userObj.username[0].toUpperCase();
+
+            document.getElementById('chat-verified').style.display = (userObj.isVerified || userObj.username.toLowerCase() === 'kriexz') ? 'inline-flex' : 'none';
+
+            const msgBox = document.getElementById('messages-box');
+            msgBox.innerHTML = '';
+
+            if (unsubscribeMsg) unsubscribeMsg();
+
+            try {
+                // Підписка на повідомлення без складних індексів
+                unsubscribeMsg = onSnapshot(collection(db, `chats/${activeChatId}/messages`), (snapshot) => {
+                    msgBox.innerHTML = '';
+                    let docsArr = [];
+                    snapshot.forEach(d => {
+                        docsArr.push({ id: d.id, ...d.data() });
+                    });
+
+                    // Надійне сортування за часом у пам'яті клієнта
+                    docsArr.sort((a, b) => {
+                        const tA = a.timestamp || 0;
+                        const tB = b.timestamp || 0;
+                        return tA - tB;
+                    });
+
+                    docsArr.forEach(m => {
+                        const div = document.createElement('div');
+                        div.className = `message ${m.sender === currentProfile.username ? 'outgoing' : 'incoming'}`;
+                        div.innerText = m.text;
+                        msgBox.appendChild(div);
+                    });
+                    msgBox.scrollTop = msgBox.scrollHeight;
+                });
+            } catch(e) {
+                console.error("Помилка підписки чату:", e);
+            }
+        }
+
+        window.sendMessage = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById('message-input');
+            const val = input.value.trim();
+            if (!val || !activeChatId) return;
+
+            const now = Date.now();
+
+            try {
+                await addDoc(collection(db, `chats/${activeChatId}/messages`), {
+                    text: val,
+                    sender: currentProfile.username,
+                    timestamp: now
+                });
+            } catch(e) {
+                console.error("Помилка надсилання у Firestore:", e);
+            }
+
+            input.value = '';
+        };
+
+        // Створення спільнот без галочки
+        window.openCreateModal = function() { document.getElementById('create-modal').style.display = 'flex'; };
+        window.closeCreateModal = function() { document.getElementById('create-modal').style.display = 'none'; };
+        
+        window.handleCreateChat = function(e) {
+            e.preventDefault();
+            const type = document.getElementById('create-type').value;
+            const name = document.getElementById('create-name').value.trim();
+            if(!name) return;
+
+            const slug = name.toLowerCase().replace(/\s+/g, '_');
+            const newEntity = {
+                username: slug,
+                fullname: name,
+                type: type,
+                isVerified: false, // ГАЛОЧКА НЕ ДАЄТЬСЯ АВТОМАТИЧНО!
+                tag: type.toUpperCase(),
+                uid: 'entity_' + slug
+            };
+
+            saveLocalUser(slug, newEntity);
+            saveActiveChat(newEntity);
+            closeCreateModal();
+            loadChatsList();
+        };
+
+        // АДМІН-ПАНЕЛЬ KRIEXZ
+        window.openAdminModal = async function() {
+            document.getElementById('admin-modal').style.display = 'flex';
+            const list = document.getElementById('admin-users-list');
+            list.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Синхронізація реєстру користувачів...</div>';
+
+            const allUsersMap = getLocalUsers();
+
+            try {
+                const snap = await getDocs(collection(db, 'profiles'));
+                snap.forEach(d => {
+                    const u = d.data();
+                    allUsersMap[u.username.toLowerCase()] = { ...u, docId: d.id };
+                });
+            } catch(e) {}
+
+            const usersList = Object.values(allUsersMap);
+            document.getElementById('admin-user-count').innerText = usersList.length;
+
+            list.innerHTML = '';
+            usersList.forEach(u => {
+                const row = document.createElement('div');
+                row.className = 'user-row';
+                row.innerHTML = `
+                    <div style="overflow:hidden;">
+                        <strong>@${u.username}</strong> ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '✔️' : ''} ${u.tag ? `[${u.tag}]` : ''}
+                    </div>
+                    <div style="display:flex; gap:4px; flex-shrink:0;">
+                        <button class="admin-action-btn" onclick="toggleVerify('${u.username}', '${u.docId || u.uid || ''}')">${u.isVerified ? 'Зняти ✔️' : 'Дати ✔️'}</button>
+                        <button class="admin-action-btn" onclick="setTagPrompt('${u.username}', '${u.docId || u.uid || ''}')">🏷️ Тег</button>
+                        <button class="admin-action-btn danger" onclick="deleteUserLocal('${u.username}', '${u.docId || u.uid || ''}')">Видалити</button>
+                    </div>
+                `;
+                list.appendChild(row);
             });
         };
 
-        window.toggleUserVerify = async function(username, docId) {
-            const users = getStorageUsers();
+        window.toggleVerify = async function(username, docId) {
+            const users = getLocalUsers();
             const key = username.toLowerCase();
-            const cur = users[key] ? users[key].isVerified : false;
-            const newStatus = !cur;
+            const currentVal = users[key] ? users[key].isVerified : false;
+            const newStatus = !currentVal;
 
             if (users[key]) {
                 users[key].isVerified = newStatus;
-                localStorage.setItem('nx_users', JSON.stringify(users));
+                localStorage.setItem('nexchat_local_users', JSON.stringify(users));
             }
 
             if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
@@ -1158,50 +1249,50 @@
                 } catch(e) {}
             }
 
-            if (key === currentUserProfile.username.toLowerCase()) {
-                currentUserProfile.isVerified = newStatus;
-                localStorage.setItem('nx_current_user', JSON.stringify(currentUserProfile));
-                renderProfileInfo();
+            if (key === currentProfile.username.toLowerCase()) {
+                currentProfile.isVerified = newStatus;
+                localStorage.setItem('nexchat_active_user', JSON.stringify(currentProfile));
+                updateProfileUI();
             }
 
             openAdminModal();
-            renderChatsList();
+            loadChatsList();
         };
 
-        window.setUserTagPrompt = async function(username, docId) {
-            const t = prompt("Введіть кастомний тег (наприклад: VIP, MODER, DEV):");
-            if (t !== null) {
-                const formatted = t.trim().toUpperCase();
-                const users = getStorageUsers();
+        window.setTagPrompt = async function(username, docId) {
+            const tag = prompt("Введіть спеціальний тег для користувача (наприклад: VIP, MODER, DEV):");
+            if (tag !== null) {
+                const formattedTag = tag.trim().toUpperCase();
+                const users = getLocalUsers();
                 const key = username.toLowerCase();
 
                 if (users[key]) {
-                    users[key].tag = formatted;
-                    localStorage.setItem('nx_users', JSON.stringify(users));
+                    users[key].tag = formattedTag;
+                    localStorage.setItem('nexchat_local_users', JSON.stringify(users));
                 }
 
                 if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
                     try {
-                        await updateDoc(doc(db, 'profiles', docId), { tag: formatted });
+                        await updateDoc(doc(db, 'profiles', docId), { tag: formattedTag });
                     } catch(e) {}
                 }
 
-                if (key === currentUserProfile.username.toLowerCase()) {
-                    currentUserProfile.tag = formatted;
-                    localStorage.setItem('nx_current_user', JSON.stringify(currentUserProfile));
-                    renderProfileInfo();
+                if (key === currentProfile.username.toLowerCase()) {
+                    currentProfile.tag = formattedTag;
+                    localStorage.setItem('nexchat_active_user', JSON.stringify(currentProfile));
+                    updateProfileUI();
                 }
 
                 openAdminModal();
-                renderChatsList();
+                loadChatsList();
             }
         };
 
-        window.deleteUserRecord = async function(username, docId) {
-            if (confirm(`Видалити @${username}?`)) {
-                const users = getStorageUsers();
+        window.deleteUserLocal = async function(username, docId) {
+            if (confirm(`Видалити @${username} з системи?`)) {
+                const users = getLocalUsers();
                 delete users[username.toLowerCase()];
-                localStorage.setItem('nx_users', JSON.stringify(users));
+                localStorage.setItem('nexchat_local_users', JSON.stringify(users));
 
                 if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
                     try {
@@ -1210,7 +1301,7 @@
                 }
 
                 openAdminModal();
-                renderChatsList();
+                loadChatsList();
             }
         };
 
