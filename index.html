@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexChat — Ultimate Messenger</title>
+    <title>NexChat — Ultimate Messenger & Web Application</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ==========================================================================
+           1. CSS СИСТЕМА ТА ЗМІННІ (Telegram/Discord Theme)
+           ================================================================********** */
         :root {
             --bg-primary: #0b0e14;
             --bg-secondary: #121824;
@@ -38,7 +41,9 @@
             overflow: hidden;
         }
 
-        /* Екрани */
+        /* ==========================================================================
+           2. ЕКРАН АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ
+           ================================================================********** */
         .auth-screen {
             display: flex;
             align-items: center;
@@ -127,6 +132,7 @@
             color: var(--text-main);
             font-size: 15px;
             outline: none;
+            transition: border-color var(--transition-speed);
         }
 
         .input-group input:focus {
@@ -159,7 +165,9 @@
             font-weight: 500;
         }
 
-        /* Головний інтерфейс */
+        /* ==========================================================================
+           3. ОСНОВНИЙ ІНТЕРФЕЙС МЕСЕНДЖЕРА
+           ================================================================********** */
         .app-container {
             display: flex;
             width: 100vw;
@@ -231,10 +239,20 @@
             border: 1px solid var(--accent-blue);
         }
 
-        .verified-icon {
-            color: var(--verified-color);
-            font-size: 14px;
-            margin-left: 2px;
+        /* Професійний значок галочки (Verified Checkmark SVG) */
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background-color: var(--verified-color);
+            border-radius: 50%;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 4px;
+            flex-shrink: 0;
         }
 
         .header-btns {
@@ -272,6 +290,7 @@
             color: #fff;
         }
 
+        /* Папки */
         .folder-tabs {
             display: flex;
             gap: 6px;
@@ -291,15 +310,24 @@
             border-radius: 8px;
             cursor: pointer;
             white-space: nowrap;
+            transition: var(--transition-speed);
+        }
+
+        .folder-btn:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-main);
         }
 
         .folder-btn.active {
             background-color: var(--accent-blue);
             color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
         }
 
         .search-container {
             padding: 12px 16px;
+            display: flex;
+            gap: 8px;
         }
 
         .search-box {
@@ -310,6 +338,7 @@
             padding: 10px 14px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
+            flex: 1;
         }
 
         .search-box input {
@@ -319,6 +348,23 @@
             outline: none;
             width: 100%;
             font-size: 14px;
+        }
+
+        .create-btn {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition-speed);
+        }
+
+        .create-btn:hover {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
         }
 
         .chat-list {
@@ -340,6 +386,9 @@
             background-color: var(--bg-hover);
         }
 
+        /* ==========================================================================
+           4. ЦЕНТРАЛЬНИЙ ЧАТ ТА ПОВІДОМЛЕННЯ
+           ================================================================********** */
         .chat-area {
             flex: 1;
             display: flex;
@@ -356,6 +405,7 @@
             color: var(--text-muted);
             gap: 16px;
             text-align: center;
+            padding: 20px;
         }
 
         .active-chat {
@@ -380,6 +430,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            background: radial-gradient(circle at center, var(--bg-secondary) 0%, var(--bg-primary) 100%);
         }
 
         .message {
@@ -389,6 +440,7 @@
             font-size: 14px;
             line-height: 1.5;
             word-break: break-word;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .message.incoming {
@@ -421,6 +473,7 @@
             border-radius: 10px;
             color: var(--text-main);
             outline: none;
+            font-size: 15px;
         }
 
         .send-btn {
@@ -431,9 +484,16 @@
             border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition-speed);
         }
 
-        /* МОДАЛЬНЕ ВІКНО АДМІНКИ */
+        .send-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* ==========================================================================
+           5. МОДАЛЬНІ ВІКНА ТА АДМІН-ПАНЕЛЬ
+           ================================================================********** */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -450,7 +510,7 @@
             border: 1px solid var(--admin-gold);
             border-radius: 20px;
             width: 100%;
-            max-width: 700px;
+            max-width: 720px;
             padding: 28px;
             box-shadow: 0 0 50px rgba(245, 158, 11, 0.3);
             max-height: 90vh;
@@ -532,7 +592,7 @@
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 <h1>NexChat</h1>
             </div>
-            <p class="auth-subtitle">Авторизація та реєстрація за нікнеймом</p>
+            <p class="auth-subtitle">Вхід та реєстрація за нікнеймом</p>
             
             <div class="auth-tabs">
                 <button id="tab-signin" class="active" onclick="switchTab('signin')">Вхід</button>
@@ -567,7 +627,7 @@
                     <div style="overflow: hidden;">
                         <div style="display: flex; align-items: center; gap: 4px;">
                             <span id="my-display-name" style="font-weight: 600; font-size: 15px;">Користувач</span>
-                            <span id="my-verified" class="verified-icon" style="display: none;">✔️</span>
+                            <span id="my-verified" class="verified-badge" style="display: none;" title="Верифіковано">✓</span>
                             <span id="dev-badge" class="badge-tag badge-dev" style="display: none;">РОЗРОБНИК 👑</span>
                             <span id="custom-badge" class="badge-tag badge-custom" style="display: none;"></span>
                         </div>
@@ -584,6 +644,7 @@
                 </div>
             </div>
 
+            <!-- Вкладки папок -->
             <div class="folder-tabs">
                 <button class="folder-btn active" onclick="switchFolder('all', this)">Всі</button>
                 <button class="folder-btn" onclick="switchFolder('personal', this)">Особисті</button>
@@ -594,8 +655,9 @@
             <div class="search-container">
                 <div class="search-box">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" placeholder="Пошук людей..." oninput="filterChats(this.value)">
+                    <input type="text" placeholder="Пошук..." oninput="filterChats(this.value)">
                 </div>
+                <button class="create-btn" onclick="openCreateModal()" title="Створити групу чи канал">+</button>
             </div>
 
             <div class="chat-list" id="chat-list-container"></div>
@@ -605,7 +667,7 @@
             <div id="empty-state" class="empty-chat">
                 <div style="font-size: 64px;">⚡</div>
                 <h2>Вітаємо в NexChat!</h2>
-                <p>Оберіть користувача зі списку зліва для початку спілкування.</p>
+                <p>Оберіть чат чи канал зі списку зліва для початку спілкування.</p>
             </div>
 
             <div id="active-chat-box" class="active-chat" style="display: none;">
@@ -614,7 +676,7 @@
                         <div id="chat-avatar" class="avatar">#</div>
                         <div>
                             <h3 id="chat-title">Чат</h3>
-                            <span style="font-size: 12px; color: var(--success-color);">у мережі</span>
+                            <span style="font-size: 12px; color: var(--success-color);">активний</span>
                         </div>
                     </div>
                 </header>
@@ -636,23 +698,47 @@
                 <h2>👑 Панель Адміністратора NexChat</h2>
                 <button style="background:none; border:none; color:white; font-size:24px; cursor:pointer;" onclick="closeAdminModal()">×</button>
             </div>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Управління користувачами, галочками верифікації та кастомними тегами у базі Firestore.</p>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Управління користувачами, верифікацією ✔️ та кастомними тегами у базі.</p>
             
             <div style="background: var(--bg-primary); padding: 14px; border-radius: 10px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
-                <span>Зареєстрованих користувачів у базі:</span>
+                <span>Всього користувачів та каналів у системі:</span>
                 <span id="admin-user-count" style="color: var(--admin-gold); font-weight: bold; font-size: 18px;">0</span>
             </div>
 
-            <h4 style="margin-bottom: 8px;">Список користувачів:</h4>
+            <h4 style="margin-bottom: 8px;">Список учасників бази:</h4>
             <div class="users-list-box" id="admin-users-list"></div>
         </div>
     </div>
 
-    <!-- FIREBASE ЛОГІКА -->
+    <!-- МОДАЛЬНЕ ВІКНО СТВОРЕННЯ ГРУПИ/КАНАЛУ -->
+    <div id="create-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Створити чат / канал</h2>
+                <button style="background:none; border:none; color:white; font-size:24px; cursor:pointer;" onclick="closeCreateModal()">×</button>
+            </div>
+            <form onsubmit="handleCreateChat(event)">
+                <div class="input-group">
+                    <label>Тип спільноти</label>
+                    <select id="create-type" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); padding:12px; border-radius:10px; color:white; outline:none;">
+                        <option value="group">Група</option>
+                        <option value="channel">Канал</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Назва</label>
+                    <input type="text" id="create-name" required placeholder="Наприклад: Технології UA">
+                </div>
+                <button type="submit" class="primary-btn">Створити</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FIREBASE ТА ОСНОВНА ЛОГІКА -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, setDoc, doc, onSnapshot, addDoc, serverTimestamp, query, orderBy, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDR35qbiBixH3y-FuaM5hoYEyLwhLuoA3w",
@@ -733,6 +819,7 @@
                     if (!pData) {
                         const isDev = (usernameLower === 'kriexz');
                         pData = { username: username, fullname: username, isDev: isDev, isVerified: isDev, tag: isDev ? 'OWNER' : '', type: 'personal', uid: 'local_' + usernameLower };
+                        saveLocalUser(usernameLower, pData);
                     }
                     
                     localStorage.setItem('nexchat_active_user', JSON.stringify(pData));
@@ -761,6 +848,8 @@
                 currentUser = user || { uid: cached ? cached.uid || 'local' : 'local' };
                 currentProfile = cached || { username: 'Kriexz', fullname: 'Kriexz', isDev: true, isVerified: true, tag: 'OWNER' };
 
+                saveLocalUser(currentProfile.username.toLowerCase(), currentProfile);
+
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'flex';
 
@@ -779,7 +868,7 @@
             document.getElementById('my-username-tag').innerText = `@${currentProfile.username}`;
             document.getElementById('my-avatar').innerText = currentProfile.username[0].toUpperCase();
 
-            document.getElementById('my-verified').style.display = (currentProfile.isVerified || isKriexz) ? 'inline-block' : 'none';
+            document.getElementById('my-verified').style.display = (currentProfile.isVerified || isKriexz) ? 'inline-flex' : 'none';
 
             if (isKriexz) {
                 document.getElementById('my-avatar').classList.add('dev-avatar');
@@ -818,12 +907,12 @@
                 const snap = await getDocs(collection(db, 'profiles'));
                 snap.forEach(d => {
                     const u = d.data();
-                    allUsersMap[u.username.toLowerCase()] = u;
+                    allUsersMap[u.username.toLowerCase()] = { ...u, docId: d.id };
                 });
             } catch(e) {}
 
             Object.values(allUsersMap).forEach(u => {
-                if (u.username.toLowerCase() === currentProfile.username.toLowerCase()) return;
+                if (u.username.toLowerCase() === currentProfile.username.toLowerCase() && u.type === 'personal') return;
                 
                 if (currentFolder === 'personal' && u.type && u.type !== 'personal') return;
                 if (currentFolder === 'groups' && u.type !== 'group') return;
@@ -836,13 +925,13 @@
                     <div style="overflow:hidden;">
                         <div style="font-weight: 600; display:flex; align-items:center; gap:4px;">
                             <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${u.fullname || u.username}</span>
-                            ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '<span style="color:#3b82f6; font-size:12px;">✔️</span>' : ''}
+                            ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '<span class="verified-badge" style="font-size:9px; width:14px; height:14px;">✓</span>' : ''}
                             ${u.tag ? `<span class="badge-tag badge-custom">${u.tag}</span>` : ''}
                         </div>
-                        <div style="font-size: 12px; color: var(--text-muted);">@${u.username}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">${u.type === 'channel' ? '📢 Канал' : u.type === 'group' ? '👥 Група' : '@' + u.username}</div>
                     </div>
                 `;
-                item.onclick = () => openChat(u.uid || u.username, u.username, u.fullname);
+                item.onclick = () => openChat(u.uid || u.username, u.username, u.fullname || u.username);
                 container.appendChild(item);
             });
         }
@@ -852,7 +941,7 @@
 
             document.getElementById('empty-state').style.display = 'none';
             document.getElementById('active-chat-box').style.display = 'flex';
-            document.getElementById('chat-title').innerText = `${fullname || username} (@${username})`;
+            document.getElementById('chat-title').innerText = fullname;
             document.getElementById('chat-avatar').innerText = username[0].toUpperCase();
 
             const msgBox = document.getElementById('messages-box');
@@ -906,45 +995,65 @@
             });
         };
 
-        // ВІДКРИТТЯ АДМІН-ПАНЕЛІ З ПРЯМИМ ЧИТАННЯМ ДАНИХ FIRESTORE
+        // СТВОРЕННЯ КАНАЛІВ ТА ГРУП
+        window.openCreateModal = function() {
+            document.getElementById('create-modal').style.display = 'flex';
+        };
+        window.closeCreateModal = function() {
+            document.getElementById('create-modal').style.display = 'none';
+        };
+        window.handleCreateChat = function(e) {
+            e.preventDefault();
+            const type = document.getElementById('create-type').value;
+            const name = document.getElementById('create-name').value.trim();
+            if(!name) return;
+
+            const slug = name.toLowerCase().replace(/\s+/g, '_');
+            const newEntity = {
+                username: slug,
+                fullname: name,
+                type: type,
+                isVerified: true,
+                tag: type.toUpperCase(),
+                uid: 'entity_' + slug
+            };
+
+            saveLocalUser(slug, newEntity);
+            closeCreateModal();
+            loadUsers();
+        };
+
+        // АДМІН-ПАНЕЛЬ
         window.openAdminModal = async function() {
             document.getElementById('admin-modal').style.display = 'flex';
             const list = document.getElementById('admin-users-list');
-            list.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Завантаження користувачів з бази...</div>';
+            list.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Завантаження...</div>';
 
             const allUsersMap = getLocalUsers();
 
-            // Читання користувачів з Firestore
             try {
                 const snap = await getDocs(collection(db, 'profiles'));
                 snap.forEach(d => {
                     const u = d.data();
                     allUsersMap[u.username.toLowerCase()] = { ...u, docId: d.id };
                 });
-            } catch(e) {
-                console.error("Firestore read error:", e);
-            }
+            } catch(e) {}
 
             const usersList = Object.values(allUsersMap);
             document.getElementById('admin-user-count').innerText = usersList.length;
 
             list.innerHTML = '';
-            if (usersList.length === 0) {
-                list.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Немає зареєстрованих користувачів.</div>';
-                return;
-            }
-
             usersList.forEach(u => {
                 const row = document.createElement('div');
                 row.className = 'user-row';
                 row.innerHTML = `
                     <div style="overflow:hidden;">
-                        <strong>@${u.username}</strong> ${u.isVerified ? '✔️' : ''} ${u.tag ? `[${u.tag}]` : ''}
+                        <strong>@${u.username}</strong> ${(u.isVerified || u.username.toLowerCase() === 'kriexz') ? '✓' : ''} ${u.tag ? `[${u.tag}]` : ''}
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
-                        <button class="admin-action-btn" onclick="toggleVerify('${u.username}', '${u.docId || u.uid}')">${u.isVerified ? 'Зняти ✔️' : 'Дати ✔️'}</button>
-                        <button class="admin-action-btn" onclick="setTagPrompt('${u.username}', '${u.docId || u.uid}')">Змінити Тег</button>
-                        <button class="admin-action-btn danger" onclick="deleteUserLocal('${u.username}', '${u.docId || u.uid}')">Видалити</button>
+                        <button class="admin-action-btn" onclick="toggleVerify('${u.username}', '${u.docId || u.uid || ''}')">${u.isVerified ? 'Зняти ✔️' : 'Дати ✔️'}</button>
+                        <button class="admin-action-btn" onclick="setTagPrompt('${u.username}', '${u.docId || u.uid || ''}')">🏷️ Тег</button>
+                        <button class="admin-action-btn danger" onclick="deleteUserLocal('${u.username}', '${u.docId || u.uid || ''}')">Видалити</button>
                     </div>
                 `;
                 list.appendChild(row);
@@ -954,20 +1063,18 @@
         window.toggleVerify = async function(username, docId) {
             const users = getLocalUsers();
             const key = username.toLowerCase();
-            const newStatus = users[key] ? !users[key].isVerified : true;
+            const currentVal = users[key] ? users[key].isVerified : false;
+            const newStatus = !currentVal;
 
             if (users[key]) {
                 users[key].isVerified = newStatus;
                 localStorage.setItem('nexchat_local_users', JSON.stringify(users));
             }
 
-            // Оновлення в Firestore
-            if (docId && !docId.startsWith('local_')) {
+            if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
                 try {
                     await updateDoc(doc(db, 'profiles', docId), { isVerified: newStatus });
-                } catch(e) {
-                    console.error(e);
-                }
+                } catch(e) {}
             }
 
             if (key === currentProfile.username.toLowerCase()) {
@@ -981,7 +1088,7 @@
         };
 
         window.setTagPrompt = async function(username, docId) {
-            const tag = prompt("Введіть новий тег (наприклад: VIP, MODER, DEV, SUPPORTER або порожньо щоб видалити):");
+            const tag = prompt("Введіть спеціальний тег (наприклад: VIP, MODER, DEV):");
             if (tag !== null) {
                 const formattedTag = tag.trim().toUpperCase();
                 const users = getLocalUsers();
@@ -992,12 +1099,10 @@
                     localStorage.setItem('nexchat_local_users', JSON.stringify(users));
                 }
 
-                if (docId && !docId.startsWith('local_')) {
+                if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
                     try {
                         await updateDoc(doc(db, 'profiles', docId), { tag: formattedTag });
-                    } catch(e) {
-                        console.error(e);
-                    }
+                    } catch(e) {}
                 }
 
                 if (key === currentProfile.username.toLowerCase()) {
@@ -1012,17 +1117,15 @@
         };
 
         window.deleteUserLocal = async function(username, docId) {
-            if (confirm(`Видалити користувача @${username}?`)) {
+            if (confirm(`Видалити @${username}?`)) {
                 const users = getLocalUsers();
                 delete users[username.toLowerCase()];
                 localStorage.setItem('nexchat_local_users', JSON.stringify(users));
 
-                if (docId && !docId.startsWith('local_')) {
+                if (docId && !docId.startsWith('local_') && !docId.startsWith('entity_')) {
                     try {
                         await deleteDoc(doc(db, 'profiles', docId));
-                    } catch(e) {
-                        console.error(e);
-                    }
+                    } catch(e) {}
                 }
 
                 openAdminModal();
