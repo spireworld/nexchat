@@ -6,9 +6,6 @@
     <title>NexChat — Ultimate Messenger & Web Application</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================================================
-           1. CSS ДИЗАЙН ТА ЗМІННІ СИСТЕМИ
-           ================================================================********** */
         :root {
             --bg-primary: #0b0e14;
             --bg-secondary: #121824;
@@ -27,16 +24,6 @@
             --transition-speed: 0.2s;
         }
 
-        [data-theme="light"] {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-tertiary: #f1f5f9;
-            --bg-hover: #e2e8f0;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #cbd5e1;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -52,9 +39,7 @@
             transition: background var(--transition-speed), color var(--transition-speed);
         }
 
-        /* ==========================================================================
-           2. ЕКРАН АВТОРИЗАЦІЇ ТА РЕЄСТРАЦІЇ
-           ================================================================********** */
+        /* Екран авторизації */
         .auth-screen {
             display: flex;
             align-items: center;
@@ -62,9 +47,7 @@
             height: 100vh;
             background: radial-gradient(circle at center, #121824 0%, #0b0e14 100%);
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
+            top: 0; left: 0; width: 100vw;
             z-index: 2000;
         }
 
@@ -89,7 +72,6 @@
             font-size: 30px;
             color: #fff;
             font-weight: 800;
-            letter-spacing: 0.5px;
         }
 
         .auth-subtitle {
@@ -181,16 +163,13 @@
             font-weight: 500;
         }
 
-        /* ==========================================================================
-           3. ГОЛОВНИЙ ІНТЕРФЕЙС МЕСЕНДЖЕРА (LAYOUT)
-           ================================================================********** */
+        /* Головний інтерфейс */
         .app-container {
             display: flex;
             width: 100vw;
             height: 100vh;
         }
 
-        /* Ліва панель (Sidebar) */
         .sidebar {
             width: 380px;
             background-color: var(--bg-secondary);
@@ -301,7 +280,6 @@
             color: #fff;
         }
 
-        /* Папки та вкладки чатів */
         .folder-tabs {
             display: flex;
             gap: 6px;
@@ -377,14 +355,7 @@
             background-color: var(--bg-hover);
         }
 
-        .chat-item.active {
-            background-color: var(--bg-tertiary);
-            border-left: 4px solid var(--accent-blue);
-        }
-
-        /* ==========================================================================
-           4. ЦЕНТРАЛЬНА ЗОНА ЛИСТУВАННЯ
-           ================================================================********** */
+        /* Центральна частина */
         .chat-area {
             flex: 1;
             display: flex;
@@ -443,7 +414,6 @@
             line-height: 1.5;
             word-break: break-word;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative;
         }
 
         .message.incoming {
@@ -496,9 +466,7 @@
             background-color: var(--accent-hover);
         }
 
-        /* ==========================================================================
-           5. МОДАЛЬНІ ВІКНА ТА АДМІН-ПАНЕЛЬ
-           ================================================================********** */
+        /* Модальне вікно адмінки */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -586,16 +554,6 @@
             background: var(--danger-color);
             color: white;
         }
-
-        /* Додаткові утиліти */
-        .badge-pill {
-            background: rgba(37, 99, 235, 0.15);
-            color: var(--accent-blue);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
@@ -659,7 +617,6 @@
                 </div>
             </div>
 
-            <!-- Вкладки та папки -->
             <div class="folder-tabs">
                 <button class="folder-btn active" onclick="switchFolder('all', this)">Всі</button>
                 <button class="folder-btn" onclick="switchFolder('personal', this)">Особисті</button>
@@ -675,7 +632,7 @@
             </div>
 
             <div class="chat-list" id="chat-list-container">
-                <!-- Список чатів динамічний -->
+                <!-- Список чатів -->
             </div>
         </aside>
 
@@ -698,7 +655,7 @@
                 </header>
 
                 <div class="messages-container" id="messages-box">
-                    <!-- Повідомлення чату -->
+                    <!-- Повідомлення -->
                 </div>
 
                 <form class="message-input-form" onsubmit="sendMessage(event)">
@@ -716,7 +673,7 @@
                 <h2>👑 Панель Адміністратора NexChat (Kriexz)</h2>
                 <button style="background:none; border:none; color:white; font-size:24px; cursor:pointer;" onclick="closeAdminModal()">×</button>
             </div>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Повне управління верифікацією, спеціальними тегами та користувачами платформи.</p>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Управління верифікацією, спеціальними тегами та користувачами платформи.</p>
             
             <div style="background: var(--bg-primary); padding: 14px; border-radius: 10px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
                 <span>Зареєстрованих користувачів у системі:</span>
@@ -732,7 +689,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDR35qbiBixH3y-FuaM5hoYEyLwhLuoA3w",
@@ -754,7 +711,6 @@
         let unsubscribeMsg = null;
         let currentFolder = 'all';
 
-        // Локальне сховище для надійного збереження профілів
         function getLocalUsers() {
             return JSON.parse(localStorage.getItem('nexchat_local_users') || '{}');
         }
@@ -820,9 +776,7 @@
                     
                     try {
                         await signInWithEmailAndPassword(auth, email, password);
-                    } catch(e) {
-                        // Автономний вхід при помилці мережі
-                    }
+                    } catch(e) {}
                     location.reload();
                 }
             } catch (err) {
@@ -908,7 +862,6 @@
             Object.values(allUsersMap).forEach(u => {
                 if (u.username.toLowerCase() === currentProfile.username.toLowerCase()) return;
                 
-                // Фільтрація по папках
                 if (currentFolder === 'personal' && u.type && u.type !== 'personal') return;
                 if (currentFolder === 'groups' && u.type !== 'group') return;
                 if (currentFolder === 'channels' && u.type !== 'channel') return;
@@ -990,7 +943,7 @@
             });
         };
 
-        // АДМІН-ПАНЕЛЬ ФУНКЦІЇ
+        // АДМІН-ПАНЕЛЬ: ВИДАЧА ГАЛОЧОК ТА ТЕГІВ
         window.openAdminModal = async function() {
             document.getElementById('admin-modal').style.display = 'flex';
             const list = document.getElementById('admin-users-list');
@@ -1008,7 +961,7 @@
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
                         <button class="admin-action-btn" onclick="toggleVerify('${u.username}')">${u.isVerified ? 'Зняти ✔️' : 'Дати ✔️'}</button>
-                        <button class="admin-action-btn" onclick="setTagPrompt('${u.username}')">Тег</button>
+                        <button class="admin-action-btn" onclick="setTagPrompt('${u.username}')">Змінити Тег</button>
                         <button class="admin-action-btn danger" onclick="deleteUserLocal('${u.username}')">Видалити</button>
                     </div>
                 `;
@@ -1016,25 +969,57 @@
             });
         };
 
-        window.toggleVerify = function(username) {
+        window.toggleVerify = async function(username) {
             const users = getLocalUsers();
             const key = username.toLowerCase();
             if (users[key]) {
                 users[key].isVerified = !users[key].isVerified;
                 localStorage.setItem('nexchat_local_users', JSON.stringify(users));
+                
+                // Синхронізація з Firestore якщо є UID
+                if (users[key].uid && !users[key].uid.startsWith('local_')) {
+                    try {
+                        await updateDoc(doc(db, 'profiles', users[key].uid), {
+                            isVerified: users[key].isVerified
+                        });
+                    } catch(e) {}
+                }
+
+                // Оновлення поточного профілю якщо змінюємо собі
+                if (key === currentProfile.username.toLowerCase()) {
+                    currentProfile.isVerified = users[key].isVerified;
+                    localStorage.setItem('nexchat_active_user', JSON.stringify(currentProfile));
+                    updateProfileUI();
+                }
+
                 openAdminModal();
                 loadUsers();
             }
         };
 
-        window.setTagPrompt = function(username) {
-            const tag = prompt("Введіть спеціальний тег для користувача (напр. VIP, MODER, DEV):");
+        window.setTagPrompt = async function(username) {
+            const tag = prompt("Введіть спеціальний тег (наприклад: VIP, MODER, DEV, SUPPORTER або залиште порожнім щоб прибрати):");
             if (tag !== null) {
                 const users = getLocalUsers();
                 const key = username.toLowerCase();
                 if (users[key]) {
-                    users[key].tag = tag.toUpperCase();
+                    users[key].tag = tag.trim().toUpperCase();
                     localStorage.setItem('nexchat_local_users', JSON.stringify(users));
+
+                    if (users[key].uid && !users[key].uid.startsWith('local_')) {
+                        try {
+                            await updateDoc(doc(db, 'profiles', users[key].uid), {
+                                tag: users[key].tag
+                            });
+                        } catch(e) {}
+                    }
+
+                    if (key === currentProfile.username.toLowerCase()) {
+                        currentProfile.tag = users[key].tag;
+                        localStorage.setItem('nexchat_active_user', JSON.stringify(currentProfile));
+                        updateProfileUI();
+                    }
+
                     openAdminModal();
                     loadUsers();
                 }
