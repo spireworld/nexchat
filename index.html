@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VORTEX MESSENGER</title>
+    <title>NexChat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #2a374a;
+            --admin-color: #f59e0b;
         }
 
         * {
@@ -187,6 +188,11 @@
             flex-shrink: 0;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 6px;
+        }
+
         .icon-btn {
             background: none;
             border: none;
@@ -200,6 +206,10 @@
         .icon-btn:hover {
             background-color: var(--bg-tertiary);
             color: white;
+        }
+
+        .admin-icon-btn {
+            color: var(--admin-color);
         }
 
         .search-box {
@@ -351,16 +361,88 @@
         .send-btn:hover {
             background-color: var(--accent-hover);
         }
+
+        /* Модальне вікно Адмін-панелі */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .admin-modal {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .admin-header h2 {
+            color: var(--admin-color);
+            font-size: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-primary);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card h4 {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .stat-card p {
+            font-size: 24px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Екран авторизації / реєстрації -->
+    <!-- Екран авторизації / реєстрації за Нікнеймом -->
     <div id="auth-screen" class="auth-screen">
         <div class="auth-card">
             <div class="auth-logo">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                <h1>VORTEX</h1>
+                <h1>NexChat</h1>
             </div>
             <p class="auth-subtitle">Сучасний захищений месенджер</p>
             
@@ -370,23 +452,17 @@
             </div>
 
             <form id="auth-form" onsubmit="handleAuth(event)">
-                <div id="signup-fields" style="display: none;">
-                    <div class="input-group">
-                        <label>Юзернейм (унікальний)</label>
-                        <input type="text" id="username" placeholder="vortex_user">
-                    </div>
-                    <div class="input-group">
-                        <label>Повне ім'я</label>
-                        <input type="text" id="fullname" placeholder="Іван Петренко">
-                    </div>
-                </div>
                 <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" id="email" required placeholder="name@example.com">
+                    <label>Нікнейм (Username)</label>
+                    <input type="text" id="username-input" required placeholder="Kriexz або ваш нік">
+                </div>
+                <div id="signup-fullname-group" class="input-group" style="display: none;">
+                    <label>Повне ім'я</label>
+                    <input type="text" id="fullname-input" placeholder="Іван Петренко">
                 </div>
                 <div class="input-group">
                     <label>Пароль</label>
-                    <input type="password" id="password" required placeholder="••••••••">
+                    <input type="password" id="password-input" required placeholder="••••••••">
                 </div>
                 <button type="submit" id="auth-btn" class="primary-btn">Увійти</button>
                 <p id="auth-error" class="error-msg"></p>
@@ -394,7 +470,7 @@
         </div>
     </div>
 
-    <!-- Основний інтерфейс месенджера -->
+    <!-- Основний інтерфейс NexChat -->
     <div id="app-screen" class="app-container" style="display: none;">
         
         <!-- Ліва панель -->
@@ -404,14 +480,20 @@
                     <div id="my-avatar" class="avatar-placeholder">U</div>
                     <span id="my-username">@user</span>
                 </div>
-                <button class="icon-btn" onclick="logoutUser()" title="Вийти">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                </button>
+                <div class="header-actions">
+                    <!-- Кнопка адмін-панелі (видно лише для Kriexz) -->
+                    <button id="admin-panel-btn" class="icon-btn admin-icon-btn" onclick="openAdminPanel()" title="Адмін-панель" style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                    </button>
+                    <button class="icon-btn" onclick="logoutUser()" title="Вийти">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                </div>
             </div>
 
             <div class="search-box">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="search-input" placeholder="Пошук людей..." oninput="handleSearch(this.value)">
+                <input type="text" id="search-input" placeholder="Пошук користувачів..." oninput="handleSearch(this.value)">
             </div>
 
             <div class="chat-list" id="chat-list"></div>
@@ -421,7 +503,7 @@
         <main class="chat-area">
             <div id="no-chat-selected" class="empty-chat">
                 <div class="empty-icon">💬</div>
-                <h2>Виберіть чат для початку спілкування</h2>
+                <h2>Виберіть чат для спілкування в NexChat</h2>
             </div>
 
             <div id="active-chat-container" class="active-chat" style="display: none;">
@@ -447,81 +529,106 @@
         </main>
     </div>
 
-    <!-- Firebase та логіка програми -->
+    <!-- Модальне вікно Адмін-панелі (Тільки для Kriexz) -->
+    <div id="admin-modal" class="modal-overlay">
+        <div class="admin-modal">
+            <div class="admin-header">
+                <h2>Панель адміністратора NexChat</h2>
+                <button class="close-modal" onclick="closeAdminPanel()">×</button>
+            </div>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h4>Всього користувачів</h4>
+                    <p id="stat-users-count">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Статус системи</h4>
+                    <p style="color: #22c55e; font-size: 18px; margin-top: 4px;">Працює стабільно</p>
+                </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 14px;">Ви увійшли як головний адміністратор системи (@Kriexz). Усі права захищено.</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK та Логіка застосунку -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
-        // 🔥 ВСТАВТЕ СВОЇ ДАНІ З FIREBASE CONSOLE ТУТ:
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        // Ваша конфігурація Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDR35qbiBixH3y-FuaM5hoYEyLwhLuoA3w",
+            authDomain: "nexchat-aabb2.firebaseapp.com",
+            projectId: "nexchat-aabb2",
+            storageBucket: "nexchat-aabb2.firebasestorage.app",
+            messagingSenderId: "160739900339",
+            appId: "1:160739900339:web:42775b23e97be5583769c6"
+        };
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDR35qbiBixH3y-FuaM5hoYEyLwhLuoA3w",
-  authDomain: "nexchat-aabb2.firebaseapp.com",
-  projectId: "nexchat-aabb2",
-  storageBucket: "nexchat-aabb2.firebasestorage.app",
-  messagingSenderId: "160739900339",
-  appId: "1:160739900339:web:42775b23e97be5583769c6"
-};
-
-// Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
         let currentAuthMode = 'signin';
         let currentUser = null;
         let activeChatId = null;
         let unsubscribeMessages = null;
 
+        // Перемикання Вхід / Реєстрація
         window.switchAuthTab = function(mode) {
             currentAuthMode = mode;
-            const signupFields = document.getElementById('signup-fields');
+            const fullnameGroup = document.getElementById('signup-fullname-group');
             const authBtn = document.getElementById('auth-btn');
             const tabSignin = document.getElementById('tab-signin');
             const tabSignup = document.getElementById('tab-signup');
 
             if (mode === 'signup') {
-                signupFields.style.display = 'block';
+                fullnameGroup.style.display = 'block';
                 authBtn.innerText = 'Зареєструватися';
                 tabSignup.classList.add('active');
                 tabSignin.classList.remove('active');
             } else {
-                signupFields.style.display = 'none';
+                fullnameGroup.style.display = 'none';
                 authBtn.innerText = 'Увійти';
                 tabSignin.classList.add('active');
                 tabSignup.classList.remove('active');
             }
         }
 
+        // Обробка Авторизації / Реєстрації через Нікнейм
         window.handleAuth = async function(event) {
             event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const usernameInput = document.getElementById('username-input').value.trim().toLowerCase();
+            const password = document.getElementById('password-input').value;
             const errorEl = document.getElementById('auth-error');
             errorEl.innerText = '';
 
+            // Оскільки Firebase Auth вимагає пошту, генеруємо приховану пошту на основі унікального ніку
+            const syntheticEmail = `${usernameInput}@nexchat.local`;
+
             try {
                 if (currentAuthMode === 'signup') {
-                    const username = document.getElementById('username').value;
-                    const fullname = document.getElementById('fullname').value;
-                    if (!username) throw new Error('Введіть юзернейм');
+                    const fullname = document.getElementById('fullname-input').value.trim();
+                    if (!usernameInput) throw new Error('Введіть нікнейм');
 
-                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    const res = await createUserWithEmailAndPassword(auth, syntheticEmail, password);
                     await setDoc(doc(db, 'profiles', res.user.uid), {
                         uid: res.user.uid,
-                        username,
-                        fullname,
+                        username: usernameInput,
+                        fullname: fullname || usernameInput,
                         createdAt: serverTimestamp()
                     });
                 } else {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    await signInWithEmailAndPassword(auth, syntheticEmail, password);
                 }
             } catch (err) {
-                errorEl.innerText = err.message;
+                console.error(err);
+                if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+                    errorEl.innerText = 'Невірний нікнейм або пароль';
+                } else {
+                    errorEl.innerText = err.message;
+                }
             }
         }
 
@@ -529,6 +636,7 @@ const firebaseConfig = {
             signOut(auth);
         }
 
+        // Спостерігач за станом користувача
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -540,6 +648,13 @@ const firebaseConfig = {
                     const data = profileDoc.data();
                     document.getElementById('my-username').innerText = `@${data.username}`;
                     document.getElementById('my-avatar').innerText = data.username[0].toUpperCase();
+
+                    // Перевірка чи це адміністратор Kriexz
+                    if (data.username.toLowerCase() === 'kriexz') {
+                        document.getElementById('admin-panel-btn').style.display = 'block';
+                    } else {
+                        document.getElementById('admin-panel-btn').style.display = 'none';
+                    }
                 }
                 loadChats();
             } else {
@@ -549,6 +664,7 @@ const firebaseConfig = {
             }
         });
 
+        // Завантаження списку користувачів для чатів
         async function loadChats() {
             const chatListEl = document.getElementById('chat-list');
             chatListEl.innerHTML = '';
@@ -572,12 +688,13 @@ const firebaseConfig = {
             });
         }
 
+        // Відкриття особистого чату та синхронізація в реальному часі
         async function openChat(recipientId, recipientName) {
             activeChatId = [currentUser.uid, recipientId].sort().join('_');
             
             document.getElementById('no-chat-selected').style.display = 'none';
             document.getElementById('active-chat-container').style.display = 'flex';
-            document.getElementById('current-chat-title').innerText = recipientName;
+            document.getElementById('current-chat-title').innerText = `@${recipientName}`;
             document.getElementById('current-chat-avatar').innerText = recipientName[0].toUpperCase();
 
             const messagesContainer = document.getElementById('messages-container');
@@ -599,6 +716,7 @@ const firebaseConfig = {
             });
         }
 
+        // Надсилання повідомлень
         window.handleSendMessage = async function(event) {
             event.preventDefault();
             const input = document.getElementById('message-input');
@@ -614,12 +732,24 @@ const firebaseConfig = {
             input.value = '';
         }
 
+        // Пошук у списку чатів
         window.handleSearch = function(queryText) {
             const items = document.querySelectorAll('.chat-item');
             items.forEach(item => {
                 const text = item.innerText.toLowerCase();
                 item.style.display = text.includes(queryText.toLowerCase()) ? 'flex' : 'none';
             });
+        }
+
+        // Керування модальним вікном адмін-панелі
+        window.openAdminPanel = async function() {
+            document.getElementById('admin-modal').style.display = 'flex';
+            const querySnapshot = await getDocs(collection(db, 'profiles'));
+            document.getElementById('stat-users-count').innerText = querySnapshot.size;
+        }
+
+        window.closeAdminPanel = function() {
+            document.getElementById('admin-modal').style.display = 'none';
         }
     </script>
 </body>
