@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VORTEX MESSENGER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0e14;
+            --bg-secondary: #121824;
+            --bg-tertiary: #1b2433;
+            --accent-blue: #2563eb;
+            --accent-hover: #1d4ed8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #2a374a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Авторизація */
+        .auth-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #121824 0%, #0b0e14 100%);
+        }
+
+        .auth-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .auth-logo h1 {
+            font-size: 24px;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .auth-subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .auth-tabs button {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .auth-tabs button.active {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .primary-btn {
+            width: 100%;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+
+        .primary-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* Інтерфейс месенджера */
+        .app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 360px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-mini-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-tertiary);
+            color: white;
+        }
+
+        .search-box {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--bg-tertiary);
+            margin: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-item:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        /* Чат зона */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-primary);
+        }
+
+        .empty-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            gap: 16px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+        }
+
+        .active-chat {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-online {
+            font-size: 12px;
+            color: #22c55e;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 60%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-break: break-word;
+            color: #fff;
+        }
+
+        .message.incoming {
+            background-color: var(--bg-secondary);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.outgoing {
+            background-color: var(--accent-blue);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message-input-form {
+            padding: 16px;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+
+        .message-input-form input {
+            flex: 1;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        .send-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background-color: var(--accent-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Екран авторизації / реєстрації -->
+    <div id="auth-screen" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <h1>VORTEX</h1>
+            </div>
+            <p class="auth-subtitle">Сучасний захищений месенджер</p>
+            
+            <div class="auth-tabs">
+                <button id="tab-signin" class="active" onclick="switchAuthTab('signin')">Вхід</button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')">Реєстрація</button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div id="signup-fields" style="display: none;">
+                    <div class="input-group">
+                        <label>Юзернейм (унікальний)</label>
+                        <input type="text" id="username" placeholder="vortex_user">
+                    </div>
+                    <div class="input-group">
+                        <label>Повне ім'я</label>
+                        <input type="text" id="fullname" placeholder="Іван Петренко">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="email" required placeholder="name@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Пароль</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-btn" class="primary-btn">Увійти</button>
+                <p id="auth-error" class="error-msg"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Основний інтерфейс месенджера -->
+    <div id="app-screen" class="app-container" style="display: none;">
+        
+        <!-- Ліва панель -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-mini-profile">
+                    <div id="my-avatar" class="avatar-placeholder">U</div>
+                    <span id="my-username">@user</span>
+                </div>
+                <button class="icon-btn" onclick="logoutUser()" title="Вийти">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="search-input" placeholder="Пошук людей..." oninput="handleSearch(this.value)">
+            </div>
+
+            <div class="chat-list" id="chat-list"></div>
+        </aside>
+
+        <!-- Центральна частина -->
+        <main class="chat-area">
+            <div id="no-chat-selected" class="empty-chat">
+                <div class="empty-icon">💬</div>
+                <h2>Виберіть чат для початку спілкування</h2>
+            </div>
+
+            <div id="active-chat-container" class="active-chat" style="display: none;">
+                <header class="chat-header">
+                    <div class="chat-header-info">
+                        <div id="current-chat-avatar" class="avatar-placeholder">#</div>
+                        <div>
+                            <h3 id="current-chat-title">Назва чату</h3>
+                            <span id="current-chat-status" class="status-online">онлайн</span>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="messages-container" id="messages-container"></div>
+
+                <form class="message-input-form" onsubmit="handleSendMessage(event)">
+                    <input type="text" id="message-input" placeholder="Написати повідомлення..." autocomplete="off">
+                    <button type="submit" class="send-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase та логіка програми -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, setDoc, doc, getDoc, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // 🔥 ВСТАВТЕ СВОЇ ДАНІ З FIREBASE CONSOLE ТУТ:
+        // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDR35qbiBixH3y-FuaM5hoYEyLwhLuoA3w",
+  authDomain: "nexchat-aabb2.firebaseapp.com",
+  projectId: "nexchat-aabb2",
+  storageBucket: "nexchat-aabb2.firebasestorage.app",
+  messagingSenderId: "160739900339",
+  appId: "1:160739900339:web:42775b23e97be5583769c6"
+};
+
+// Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        let currentAuthMode = 'signin';
+        let currentUser = null;
+        let activeChatId = null;
+        let unsubscribeMessages = null;
+
+        window.switchAuthTab = function(mode) {
+            currentAuthMode = mode;
+            const signupFields = document.getElementById('signup-fields');
+            const authBtn = document.getElementById('auth-btn');
+            const tabSignin = document.getElementById('tab-signin');
+            const tabSignup = document.getElementById('tab-signup');
+
+            if (mode === 'signup') {
+                signupFields.style.display = 'block';
+                authBtn.innerText = 'Зареєструватися';
+                tabSignup.classList.add('active');
+                tabSignin.classList.remove('active');
+            } else {
+                signupFields.style.display = 'none';
+                authBtn.innerText = 'Увійти';
+                tabSignin.classList.add('active');
+                tabSignup.classList.remove('active');
+            }
+        }
+
+        window.handleAuth = async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('auth-error');
+            errorEl.innerText = '';
+
+            try {
+                if (currentAuthMode === 'signup') {
+                    const username = document.getElementById('username').value;
+                    const fullname = document.getElementById('fullname').value;
+                    if (!username) throw new Error('Введіть юзернейм');
+
+                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    await setDoc(doc(db, 'profiles', res.user.uid), {
+                        uid: res.user.uid,
+                        username,
+                        fullname,
+                        createdAt: serverTimestamp()
+                    });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (err) {
+                errorEl.innerText = err.message;
+            }
+        }
+
+        window.logoutUser = function() {
+            signOut(auth);
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-screen').style.display = 'flex';
+                
+                const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
+                if (profileDoc.exists()) {
+                    const data = profileDoc.data();
+                    document.getElementById('my-username').innerText = `@${data.username}`;
+                    document.getElementById('my-avatar').innerText = data.username[0].toUpperCase();
+                }
+                loadChats();
+            } else {
+                currentUser = null;
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('app-screen').style.display = 'none';
+            }
+        });
+
+        async function loadChats() {
+            const chatListEl = document.getElementById('chat-list');
+            chatListEl.innerHTML = '';
+
+            const querySnapshot = await getDocs(collection(db, 'profiles'));
+            querySnapshot.forEach((docSnap) => {
+                const profile = docSnap.data();
+                if (profile.uid === currentUser.uid) return;
+
+                const div = document.createElement('div');
+                div.className = 'chat-item';
+                div.innerHTML = `
+                    <div class="avatar-placeholder">${profile.username[0].toUpperCase()}</div>
+                    <div>
+                        <h4>${profile.fullname || profile.username}</h4>
+                        <span style="font-size: 12px; color: var(--text-muted);">@${profile.username}</span>
+                    </div>
+                `;
+                div.onclick = () => openChat(profile.uid, profile.username);
+                chatListEl.appendChild(div);
+            });
+        }
+
+        async function openChat(recipientId, recipientName) {
+            activeChatId = [currentUser.uid, recipientId].sort().join('_');
+            
+            document.getElementById('no-chat-selected').style.display = 'none';
+            document.getElementById('active-chat-container').style.display = 'flex';
+            document.getElementById('current-chat-title').innerText = recipientName;
+            document.getElementById('current-chat-avatar').innerText = recipientName[0].toUpperCase();
+
+            const messagesContainer = document.getElementById('messages-container');
+            messagesContainer.innerHTML = '';
+
+            if (unsubscribeMessages) unsubscribeMessages();
+
+            const q = query(collection(db, `chats/${activeChatId}/messages`), orderBy('createdAt', 'asc'));
+            unsubscribeMessages = onSnapshot(q, (snapshot) => {
+                messagesContainer.innerHTML = '';
+                snapshot.forEach((docSnap) => {
+                    const msg = docSnap.data();
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message ${msg.senderId === currentUser.uid ? 'outgoing' : 'incoming'}`;
+                    msgDiv.innerText = msg.text;
+                    messagesContainer.appendChild(msgDiv);
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+        }
+
+        window.handleSendMessage = async function(event) {
+            event.preventDefault();
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text || !activeChatId) return;
+
+            await addDoc(collection(db, `chats/${activeChatId}/messages`), {
+                text,
+                senderId: currentUser.uid,
+                createdAt: serverTimestamp()
+            });
+
+            input.value = '';
+        }
+
+        window.handleSearch = function(queryText) {
+            const items = document.querySelectorAll('.chat-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(queryText.toLowerCase()) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
